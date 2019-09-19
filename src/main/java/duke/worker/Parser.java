@@ -153,6 +153,12 @@ public class Parser {
      */
 
     // -- Storage-Parsing
+
+    /**
+     * Parses the Stored Task for the main Tasks, and any queued Tasks.
+     * @param encodedTask The task stored in the Storage
+     * @return
+     */
     public static String[] parseStoredTask(String encodedTask) {
         return encodedTask.split(PARSE_MARKER_TASK);
     }
