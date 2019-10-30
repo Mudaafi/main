@@ -116,8 +116,8 @@ public class MainWindow extends AnchorPane {
     }
 
     private void displayTasks(TaskList taskList) {
-        this.taskContainerRight.getChildren().removeAll();
-        this.taskContainerLeft.getChildren().removeAll();
+        this.taskContainerRight.getChildren().clear();
+        this.taskContainerLeft.getChildren().clear();
         for (Task task : taskList.getList()) {
             int leftListLength = this.taskContainerLeft.getChildren().size();
             int rightListLength = this.taskContainerRight.getChildren().size();

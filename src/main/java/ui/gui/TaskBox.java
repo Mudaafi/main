@@ -1,5 +1,6 @@
 package ui.gui;
 
+import executor.task.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
@@ -14,7 +15,7 @@ public class TaskBox extends HBox {
     @FXML
     private TextFlow taskText;
 
-    private TaskBox(String text) {
+    private TaskBox(String taskTypeStr, String taskDescStr) {
         try {
             FXMLLoader loader = new FXMLLoader(MainWindow.class.getResource("/view/TaskBox.fxml"));
             loader.setController(this);
@@ -23,13 +24,20 @@ public class TaskBox extends HBox {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Text boldText = new Text(text);
+        Text boldText = new Text(taskTypeStr + " ");
         boldText.setStyle("-fx-font-weight: bold");
-        this.taskText.getChildren().addAll(boldText, new Text(text));
+        this.taskText.getChildren().addAll(boldText, new Text(taskDescStr));
     }
 
-    public static TaskBox getNewTaskBox(String text) {
-        TaskBox newTaskBox = new TaskBox(text);
+    /**
+     * Creates a new TaskBox GUI Component for a Task Object.
+     * @param task Task Object to be printed
+     * @return TaskBox Object
+     */
+    public static TaskBox getNewTaskBox(Task task) {
+        String taskTypeStr = task.getTaskType().toString();
+        String taskDescStr = task.genTaskDesc();
+        TaskBox newTaskBox = new TaskBox(taskTypeStr, taskDescStr);
         newTaskBox.setAlignment(Pos.CENTER_LEFT);
         return newTaskBox;
     }
