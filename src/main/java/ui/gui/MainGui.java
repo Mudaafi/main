@@ -10,19 +10,18 @@ import main.Duke;
 import java.io.IOException;
 
 public class MainGui extends Application {
-    private Duke duke = new Duke();
 
     @Override
     public void start(Stage stage) {
         try {
+            //String[] fakeArgs = {};
+            //Duke.main(fakeArgs);
             FXMLLoader fxmlLoader = new FXMLLoader(MainGui.class
                     .getResource("/view/MainWindow.fxml"));
             AnchorPane anchorPane = fxmlLoader.load();
             Scene scene = new Scene(anchorPane);
             stage.setScene(scene);
-            fxmlLoader.<MainWindow>getController().setDuke(duke);
-            fxmlLoader.<MainWindow>getController().fetchStoredImages();
-            fxmlLoader.<MainWindow>getController().displayBalancePieChart();
+            fxmlLoader.<MainWindow>getController().initialize();
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();

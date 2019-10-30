@@ -12,6 +12,9 @@ import javafx.scene.shape.Circle;
 public class DonutChart extends PieChart {
     private Circle hole;
 
+    /**
+     * Constructor for GUI Component DonutChart.
+     */
     public DonutChart() {
         super(FXCollections.observableArrayList());
         this.hole = new Circle(50);
@@ -31,19 +34,22 @@ public class DonutChart extends PieChart {
             Node pie = this.getData().get(0).getNode();
             Pane parentChart = (Pane) pie.getParent();
             if (!parentChart.getChildren().contains(hole)) {
-                matchHoleToChart(parentChart);
+                matchHoleToChart();
                 parentChart.getChildren().add(hole);
             }
         }
     }
 
+
     // @@author {Mudaafi}-reused
     // Solution below adapted from:
     // https://stackoverflow.com/questions/24121580/can-piechart-from-javafx-be-displayed-as-a-doughnut
-    private void matchHoleToChart(Pane chart) {
-        double minX = Double.MAX_VALUE, minY = Double.MAX_VALUE;
-        double maxX = Double.MIN_VALUE, maxY = Double.MIN_VALUE;
-        for (PieChart.Data data: getData()) {
+    private void matchHoleToChart() {
+        double minX = Double.MAX_VALUE;
+        double minY = Double.MAX_VALUE;
+        double maxX = Double.MIN_VALUE;
+        double maxY = Double.MIN_VALUE;
+        for (PieChart.Data data: this.getData()) {
             Node node = data.getNode();
             Bounds bounds = node.getBoundsInParent();
             if (bounds.getMinX() < minX) {
@@ -59,11 +65,17 @@ public class DonutChart extends PieChart {
                 maxY = bounds.getMaxY();
             }
         }
-        hole.setCenterX(minX + (maxX - minX) / 2);
-        hole.setCenterY(minY + (maxY - minY) / 2);
-        hole.setRadius((maxX - minX) / 2.6);
+        this.hole.setCenterX(minX + (maxX - minX) / 2);
+        this.hole.setCenterY(minY + (maxY - minY) / 2);
+        this.hole.setRadius((maxX - minX) / 2.6);
     }
 
+    /**
+     * Creates a DonutChart GUI Component.
+     * @param budgetedAmt The amount in Gold
+     * @param expenditure The amount in Red
+     * @return DonutChart Object
+     */
     public static DonutChart createBalanceChart(double budgetedAmt, double expenditure) {
         ObservableList<PieChart.Data> pieChartData =
                 FXCollections.observableArrayList(

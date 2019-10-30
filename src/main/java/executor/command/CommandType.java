@@ -22,6 +22,7 @@ public enum CommandType {
     EVENT(CommandNewTask.class),
     TODO(CommandNewTask.class),
     RECUR(CommandNewTask.class),
+    ERROR(CommandError.class),
     FDURATION(CommandNewTask.class);
 
     private final Class commandClass;
