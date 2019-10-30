@@ -1,3 +1,5 @@
+package main;
+
 import executor.task.TaskList;
 import storage.Storage;
 import ui.Ui;
@@ -8,7 +10,7 @@ public class Duke {
     protected static TaskList taskList;
 
     /**
-     * The Main method by which Duke will be launched.
+     * The Main method by which main.Duke will be launched.
      */
     public static void main(String[] args) {
         initialise();

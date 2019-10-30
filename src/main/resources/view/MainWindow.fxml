@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.VBox?>
+
+<?import ui.gui.DonutChart?>
+<AnchorPane fx:id="mainPain"
+            maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+            mouseTransparent="false" prefHeight="600.0" prefWidth="642.0" style="-fx-background-color: #ede7d1;"
+            xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="ui.gui.MainWindow">
+    <children>
+        <AnchorPane fx:id="headerPane"
+                   prefHeight="128.0" prefWidth="642.0" style="-fx-background-color: #10073e;"
+                   AnchorPane.topAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.leftAnchor="0">
+                <ImageView fx:id="headerBackground"
+                           fitHeight="128.0" fitWidth="642.0"
+                           nodeOrientation="INHERIT" pickOnBounds="true" />
+                <Label fx:id="appName"
+                       AnchorPane.topAnchor="10" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0"
+                       alignment="TOP_CENTER"
+                       text="Duke$$$" textFill="#fffaeb">
+                    <font>
+                        <Font name="Bodoni MT Bold" size="70.0"/>
+                    </font>
+                </Label>
+
+                <Label fx:id="appDescription" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0"
+                       alignment="BOTTOM_CENTER"
+                       AnchorPane.bottomAnchor="15"
+                       text="Financial Tracker" textFill="#ede7d1">
+                    <font>
+                        <Font name="Bodoni MT Bold" size="20.0" />
+                    </font>
+                </Label>
+
+        </AnchorPane>
+
+        <AnchorPane fx:id="contentPane"
+                    prefHeight="450.0" prefWidth="600.0" style="-fx-background-color: #ede7d1;"
+                    AnchorPane.leftAnchor="21.0" AnchorPane.rightAnchor="21.0" AnchorPane.topAnchor="150">
+
+            <TextField fx:id="userInput" layoutX="29.0" layoutY="147.0"
+                       onAction="#handleUserInput"
+                       prefHeight="26.0" prefWidth="585.0"
+                       promptText="Ready"
+                       style="-fx-background-color: #ede7d1;
+                       -fx-border-style: none none solid none; -fx-border-width: 0 0 1 0; -fx-border-color: #696969;"
+                       AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="0">
+                <font>
+                    <Font name="Constantia" size="12.0" />
+                </font>
+            </TextField>
+
+            <Pane fx:id="balanceChartPane"
+                  prefHeight="190.0" prefWidth="254.0"
+                  AnchorPane.leftAnchor="30" AnchorPane.topAnchor="40"
+                  >
+                <Label fx:id="balanceChartDesc"
+                       alignment="TOP_LEFT"
+                       text="BUDGET: " textFill="#013950">
+                    <font>
+                        <Font name="Constantia" size="11.0"/>
+                    </font>
+                </Label>
+                <DonutChart fx:id="balanceChart"
+                          maxHeight="190.0" prefHeight="180.0" maxWidth="254.0" prefWidth="252.0"
+                          style="-fx-background-insets: 0; -fx-border-width: 0;" />
+
+
+            </Pane>
+
+            <Pane fx:id="breakdownChart"
+                  prefHeight="190.0" prefWidth="254.0"
+                  AnchorPane.rightAnchor="30" AnchorPane.topAnchor="40"
+                  >
+                <Label fx:id="breakdownChartDesc"
+                       alignment="TOP_LEFT"
+                       text="STATS: " textFill="#013950">
+                    <font>
+                        <Font name="Constantia" size="11.0"/>
+                    </font>
+                </Label>
+                <ImageView fx:id="breakdownChartPic" fitHeight="190.0" fitWidth="254.0"
+                           pickOnBounds="true" layoutY="20"/>
+            </Pane>
+
+            <AnchorPane fx:id="taskPane"
+                        AnchorPane.topAnchor="255.0" AnchorPane.rightAnchor="30" AnchorPane.leftAnchor="30"
+                        prefHeight="168.0" prefWidth="585.0" minWidth="585.0" maxWidth="585.0"
+                        style="-fx-background-color: #ede7d1;" >
+                <ScrollPane fx:id="taskScroller" prefWidth="Infinity" prefHeight="168" maxHeight="Infinity"
+                            hbarPolicy="NEVER"
+                            AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="-10"
+                            style="-fx-background: #ede7d1; -fx-background-color: transparent;">
+                    <AnchorPane fx:id="taskContainerMain"
+                                prefHeight="-Infinity" prefWidth="540.0" pickOnBounds="false"
+                                style="-fx-background-color: #ede7d1;" >
+                        <VBox fx:id="taskContainerLeft"
+                              prefHeight="-Infinity" prefWidth="266.5"
+                              AnchorPane.leftAnchor="0" AnchorPane.topAnchor="0"
+                              spacing="5.0"
+                              style="-fx-background-color: #ede7d1;" />
+                        <VBox fx:id="taskContainerRight"
+                              prefHeight="-Infinity" prefWidth="266.5"
+                              AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0"
+                              spacing="5.0"
+                              style="-fx-background-color: #ede7d1;" />
+                    </AnchorPane>
+                </ScrollPane>
+            </AnchorPane>
+        </AnchorPane>
+    </children>
+</AnchorPane>
