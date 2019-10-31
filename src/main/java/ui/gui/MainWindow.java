@@ -5,11 +5,8 @@ import executor.task.TaskList;
 import interpreter.Interpreter;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.chart.Chart;
-import javafx.scene.chart.PieChart;
-import javafx.scene.control.Label;
+import javafx.scene.chart.*;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -22,8 +19,6 @@ import ui.Receipt;
 import ui.Wallet;
 
 import java.util.ArrayList;
-import java.util.List;
-
 
 public class MainWindow extends AnchorPane {
 
@@ -35,12 +30,16 @@ public class MainWindow extends AnchorPane {
     private AnchorPane contentPane;
     @FXML
     private ImageView headerBackground;
-    //@FXML
-    //private ImageView balanceChartPic;
     @FXML
     private DonutChart balanceChart;
     @FXML
-    private ImageView breakdownChartPic;
+    private StackedBarChart<String, Number> breakdownChart;
+    @FXML
+    private CategoryAxis xAxis;
+
+    @FXML
+    private NumberAxis yAxis;
+
     @FXML
     private TextField userInput;
     @FXML
@@ -66,7 +65,7 @@ public class MainWindow extends AnchorPane {
         this.wallet.setBalance(500.0);
         Receipt receipt = new Receipt(100.0);
         this.wallet.addReceipt(receipt);
-
+        //end test
         pieChartData = FXCollections.observableArrayList(
                         new PieChart.Data("Expenses",
                                 this.wallet.getTotalExpenses()),
@@ -74,6 +73,29 @@ public class MainWindow extends AnchorPane {
                                 this.wallet.getBalance() - this.wallet.getTotalExpenses()));
         this.displayBalancePieChart();
         this.fetchStoredImages();
+
+        XYChart.Series<String, Number> series1 = new XYChart.Series<>();
+        series1.setName("1800");
+        series1.getData().add(new XYChart.Data<>("Food", 100));
+        series1.getData().add(new XYChart.Data<>("Water", 50));
+        series1.getData().add(new XYChart.Data<>("Transport", 100));
+
+        XYChart.Series<String, Number> series2 = new XYChart.Series<>();
+        series2.setName("1900");
+        series2.getData().add(new XYChart.Data<>("Food", 100));
+        series2.getData().add(new XYChart.Data<>("Water", 100));
+        series2.getData().add(new XYChart.Data<>("Transport", 50));
+
+        XYChart.Series<String, Number> series3 = new XYChart.Series<>();
+        series3.getData().add(new XYChart.Data<>("Food", 100));
+
+        this.breakdownChart.getData().add(series1);
+        this.breakdownChart.getData().add(series2);
+        this.breakdownChart.getData().add(series3);
+        String css = this.getClass().getResource("/css/BreakdownChart.css").toExternalForm();
+        this.breakdownChart.getStylesheets().add(css);
+
+
     }
 
     @FXML
@@ -97,8 +119,8 @@ public class MainWindow extends AnchorPane {
         //Image balanceChartPic = new Image(this.getClass().getResourceAsStream("/images/balanceChartExample.png"));
         //this.balanceChartPic.setImage(balanceChartPic);
 
-        Image breakdownChartPic = new Image(this.getClass().getResourceAsStream("/images/breakdownExample.png"));
-        this.breakdownChartPic.setImage(breakdownChartPic);
+        // Image breakdownChartPic = new Image(this.getClass().getResourceAsStream("/images/breakdownExample.png"));
+        // this.breakdownChartPic.setImage(breakdownChartPic);
     }
 
     private void updateBalanceChart(Wallet wallet) {

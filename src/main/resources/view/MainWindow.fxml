@@ -10,6 +10,10 @@
 <?import javafx.scene.layout.VBox?>
 
 <?import ui.gui.DonutChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.chart.StackedBarChart?>
+
 <AnchorPane fx:id="mainPain"
             maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
             mouseTransparent="false" prefHeight="600.0" prefWidth="642.0" style="-fx-background-color: #ede7d1;"
@@ -58,9 +62,9 @@
                 </font>
             </TextField>
 
-            <Pane fx:id="balanceChartPane"
+            <AnchorPane fx:id="balanceChartPane"
                   prefHeight="190.0" prefWidth="254.0"
-                  AnchorPane.leftAnchor="30" AnchorPane.topAnchor="40"
+                  AnchorPane.leftAnchor="30" AnchorPane.topAnchor="50"
                   >
                 <Label fx:id="balanceChartDesc"
                        alignment="TOP_LEFT"
@@ -70,15 +74,14 @@
                     </font>
                 </Label>
                 <DonutChart fx:id="balanceChart"
-                          maxHeight="190.0" prefHeight="180.0" maxWidth="254.0" prefWidth="252.0"
-                          style="-fx-background-insets: 0; -fx-border-width: 0;" />
+                            maxHeight="190.0" prefHeight="190.0" maxWidth="254.0" prefWidth="252.0"
+                            AnchorPane.bottomAnchor="0"
+                />
+            </AnchorPane>
 
-
-            </Pane>
-
-            <Pane fx:id="breakdownChart"
+            <AnchorPane fx:id="breakdownChartPane"
                   prefHeight="190.0" prefWidth="254.0"
-                  AnchorPane.rightAnchor="30" AnchorPane.topAnchor="40"
+                  AnchorPane.rightAnchor="30" AnchorPane.topAnchor="50"
                   >
                 <Label fx:id="breakdownChartDesc"
                        alignment="TOP_LEFT"
@@ -87,9 +90,18 @@
                         <Font name="Constantia" size="11.0"/>
                     </font>
                 </Label>
-                <ImageView fx:id="breakdownChartPic" fitHeight="190.0" fitWidth="254.0"
-                           pickOnBounds="true" layoutY="20"/>
-            </Pane>
+                <StackedBarChart fx:id="breakdownChart" style="-fx-background-color: #ede7d1;"
+                          maxHeight="190.0" prefHeight="180.0" maxWidth="254.0" prefWidth="252.0"
+                            AnchorPane.bottomAnchor="0" AnchorPane.topAnchor="20">
+                    <xAxis>
+                        <CategoryAxis fx:id="xAxis" side="BOTTOM"/>
+                    </xAxis>
+                    <yAxis>
+                        <NumberAxis fx:id="yAxis" side="LEFT"
+                                    tickLabelsVisible="false" opacity="0"/>
+                    </yAxis>
+                </StackedBarChart>
+            </AnchorPane>
 
             <AnchorPane fx:id="taskPane"
                         AnchorPane.topAnchor="255.0" AnchorPane.rightAnchor="30" AnchorPane.leftAnchor="30"
