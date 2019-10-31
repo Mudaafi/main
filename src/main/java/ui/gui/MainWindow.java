@@ -16,9 +16,12 @@ import javafx.scene.layout.VBox;
 import main.Duke;
 import storage.Storage;
 import ui.Receipt;
+import ui.ReceiptTracker;
 import ui.Wallet;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainWindow extends AnchorPane {
 
@@ -33,7 +36,7 @@ public class MainWindow extends AnchorPane {
     @FXML
     private DonutChart balanceChart;
     @FXML
-    private StackedBarChart<String, Number> breakdownChart;
+    private StackedBarChart<String, Double> breakdownChart;
     @FXML
     private CategoryAxis xAxis;
 
@@ -61,41 +64,10 @@ public class MainWindow extends AnchorPane {
         this.taskList = new TaskList();
         this.wallet = new Wallet();
         this.displayTasks(taskList);
-        //test
-        this.wallet.setBalance(500.0);
-        Receipt receipt = new Receipt(100.0);
-        this.wallet.addReceipt(receipt);
-        //end test
-        pieChartData = FXCollections.observableArrayList(
-                        new PieChart.Data("Expenses",
-                                this.wallet.getTotalExpenses()),
-                        new PieChart.Data("Balance",
-                                this.wallet.getBalance() - this.wallet.getTotalExpenses()));
+        this.extractPieChartData();
         this.displayBalancePieChart();
         this.fetchStoredImages();
-
-        XYChart.Series<String, Number> series1 = new XYChart.Series<>();
-        series1.setName("1800");
-        series1.getData().add(new XYChart.Data<>("Food", 100));
-        series1.getData().add(new XYChart.Data<>("Water", 50));
-        series1.getData().add(new XYChart.Data<>("Transport", 100));
-
-        XYChart.Series<String, Number> series2 = new XYChart.Series<>();
-        series2.setName("1900");
-        series2.getData().add(new XYChart.Data<>("Food", 100));
-        series2.getData().add(new XYChart.Data<>("Water", 100));
-        series2.getData().add(new XYChart.Data<>("Transport", 50));
-
-        XYChart.Series<String, Number> series3 = new XYChart.Series<>();
-        series3.getData().add(new XYChart.Data<>("Food", 100));
-
-        this.breakdownChart.getData().add(series1);
-        this.breakdownChart.getData().add(series2);
-        this.breakdownChart.getData().add(series3);
-        String css = this.getClass().getResource("/css/BreakdownChart.css").toExternalForm();
-        this.breakdownChart.getStylesheets().add(css);
-
-
+        this.displayBreakdownChart();
     }
 
     @FXML
@@ -115,12 +87,14 @@ public class MainWindow extends AnchorPane {
     private void fetchStoredImages() {
         Image headerBackgroundPic = new Image(this.getClass().getResourceAsStream("/images/headerBackground.png"));
         this.headerBackground.setImage(headerBackgroundPic);
+    }
 
-        //Image balanceChartPic = new Image(this.getClass().getResourceAsStream("/images/balanceChartExample.png"));
-        //this.balanceChartPic.setImage(balanceChartPic);
-
-        // Image breakdownChartPic = new Image(this.getClass().getResourceAsStream("/images/breakdownExample.png"));
-        // this.breakdownChartPic.setImage(breakdownChartPic);
+    private void extractPieChartData() {
+        pieChartData = FXCollections.observableArrayList(
+                new PieChart.Data("Expenses",
+                        this.wallet.getTotalExpenses()),
+                new PieChart.Data("Balance",
+                        this.wallet.getBalance() - this.wallet.getTotalExpenses()));
     }
 
     private void updateBalanceChart(Wallet wallet) {
@@ -149,5 +123,84 @@ public class MainWindow extends AnchorPane {
                 this.taskContainerLeft.getChildren().add(TaskBox.getNewTaskBox(task));
             }
         }
+    }
+
+    private void displayBreakdownChart() {
+        XYChart.Series<String, Double> expenditureSeries = new XYChart.Series<>();
+        expenditureSeries.setName("Expenditure");
+        XYChart.Series<String, Double> incomeSeries = new XYChart.Series<>();
+        incomeSeries.setName("Income");
+        updateBreakdownData(expenditureSeries, incomeSeries);
+
+        XYChart.Series<String, Double> backdrop = new XYChart.Series<>();
+        backdrop.setName("Backdrop");
+        Double backdropValue = this.getBackdropValue(this.wallet);
+        HashMap<String, Double> backdropData = this.getBackdropData(backdropValue, expenditureSeries, incomeSeries);
+
+        for (Map.Entry<String, Double> data : backdropData.entrySet()) {
+            backdrop.getData().add(new XYChart.Data<String, Double>(data.getKey(), data.getValue()));
+        }
+
+        this.breakdownChart.getData().add(expenditureSeries);
+        this.breakdownChart.getData().add(incomeSeries);
+        this.breakdownChart.getData().add(backdrop);
+        this.breakdownChart.setScaleY(1.1);
+        String css = this.getClass().getResource("/css/BreakdownChart.css").toExternalForm();
+        this.breakdownChart.getStylesheets().add(css);
+    }
+
+    private void updateBreakdownData(XYChart.Series<String, Double> expenditureSeries,
+                                     XYChart.Series<String, Double> incomeSeries) {
+        for (Map.Entry<String, ReceiptTracker> folder : this.wallet.getFolders().entrySet()) {
+            if (folder.getValue().getTotalCashSpent() > 0) {
+                expenditureSeries.getData().add(new XYChart.Data<>(
+                        folder.getKey(),
+                        folder.getValue().getTotalCashSpent())
+                );
+            } else if (-folder.getValue().getTotalCashSpent() > 0) {
+                incomeSeries.getData().add(new XYChart.Data<>(
+                        folder.getKey(),
+                        -folder.getValue().getTotalCashSpent())
+                );
+            }
+        }
+    }
+
+    private Double getBackdropValue(Wallet wallet) {
+        double maxValue = 100.0;
+        for (ReceiptTracker folderContent : wallet.getFolders().values()) {
+            if (folderContent.getTotalCashSpent() > maxValue) {
+                maxValue = folderContent.getTotalCashSpent();
+            } else if (-folderContent.getTotalCashSpent() > maxValue) {
+                maxValue = -folderContent.getTotalCashSpent();
+            }
+        }
+        return maxValue;
+    }
+
+    private HashMap<String, Double> getBackdropData(Double backdropValue,
+                                                    XYChart.Series<String, Double> expenditureSeries,
+                                                    XYChart.Series<String, Double> incomeSeries) {
+        HashMap<String, Double> backdropData = new HashMap<>();
+        for (XYChart.Data<String, Double> data : expenditureSeries.getData()) {
+            backdropData.put(data.getXValue(), backdropValue - data.getYValue());
+        }
+        for (XYChart.Data<String, Double> data : incomeSeries.getData()) {
+            if (backdropData.containsKey(data.getXValue())) {
+                backdropData.replace(data.getXValue(), backdropData.get(data.getXValue()) - data.getYValue());
+            } else {
+                backdropData.put(data.getXValue(), backdropValue - data.getYValue());
+            }
+        }
+        return backdropData;
+    }
+
+    private boolean containsXValue(String xValue, XYChart.Series<String, Double> series) {
+        for (XYChart.Data<String, Double> data : series.getData()) {
+            if (data.getXValue().equals(xValue)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

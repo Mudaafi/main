@@ -3,7 +3,7 @@
     -fx-border-width: 0;
 }
 .chart-content {
-    -fx-padding: 10px;
+    -fx-padding: 0px;
 }
 
 .chart-title {
