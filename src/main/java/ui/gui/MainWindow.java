@@ -11,10 +11,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import main.Duke;
-import storage.Storage;
+import storage.StorageTask;
+import storage.StorageWallet;
 import ui.Receipt;
 import ui.ReceiptTracker;
 import ui.Wallet;
@@ -51,18 +50,26 @@ public class MainWindow extends AnchorPane {
     private VBox taskContainerRight;
 
     private Boolean exitRequest;
-    private Storage storage;
+    private StorageTask taskStore;
+    private StorageWallet walletStore;
     private TaskList taskList;
     private Wallet wallet;
     private ArrayList<String> userInputHistory;
     private ObservableList<PieChart.Data> pieChartData;
 
     @FXML
-    public void initialize() {
+    public void initialize(String taskPath, String walletPath) {
         this.exitRequest = false;
         this.userInputHistory = new ArrayList<>();
-        this.taskList = new TaskList();
+        this.taskStore = new StorageTask(taskPath);
+        this.walletStore = new StorageWallet(walletPath);
+        this.taskList = this.taskStore.loadData();
+        this.wallet = this.walletStore.loadData();
+
+        //test
         this.wallet = new Wallet();
+        this.wallet.setBalance(500.0);
+        this.wallet.addReceipt(new Receipt(100.0));
         this.displayTasks(taskList);
         this.extractPieChartData();
         this.displayBalancePieChart();
@@ -78,6 +85,9 @@ public class MainWindow extends AnchorPane {
         this.updateBalanceChart(this.wallet);
         this.displayTasks(this.taskList);
         userInput.clear();
+        if (this.exitRequest) {
+            this.exitGui();
+        }
     }
 
     /**
@@ -202,5 +212,10 @@ public class MainWindow extends AnchorPane {
             }
         }
         return false;
+    }
+
+    private void exitGui() {
+        this.taskStore.saveData(this.taskList);
+        this.walletStore.saveData(this.wallet);
     }
 }

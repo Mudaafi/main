@@ -1,25 +1,29 @@
 package main;
 
 import executor.task.TaskList;
-import storage.StorageTask;
-import storage.StorageWallet;
+import javafx.application.Application;
 import ui.Ui;
+import ui.gui.MainGui;
 
 public class Duke {
-    protected static StorageTask storetask;
-    protected static StorageWallet storewallet;
     protected static Ui ui;
+    protected static MainGui gui;
     protected static TaskList taskList;
 
     /**
      * The Main method by which main.Duke will be launched.
      */
     public static void main(String[] args) {
-        initialise();
+        initializeGui(args);
     }
 
-    private static void initialise() {
+    private static void initializeUi() {
         ui = new Ui("savedTask.txt", "savedWallet.txt");
-        ui.initialise();
+        ui.initialize();
+    }
+
+    private static void initializeGui(String[] args) {
+        gui = new MainGui();
+        gui.initialize(args, "savedTask.txt", "savedWallet.txt");
     }
 }

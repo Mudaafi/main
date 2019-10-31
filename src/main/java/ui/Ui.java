@@ -1,9 +1,6 @@
 package ui;
 
 import interpreter.Interpreter;
-import interpreter.Parser;
-import executor.command.Command;
-import executor.command.CommandType;
 import executor.task.TaskList;
 import storage.StorageTask;
 import storage.StorageWallet;
@@ -13,8 +10,8 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Ui {
-    private StorageTask storetask;
-    private StorageWallet storewallet;
+    private StorageTask taskStore;
+    private StorageWallet walletStore;
     private TaskList taskList;
     private ReceiptTracker receiptTracker;
     private Wallet wallet;
@@ -35,11 +32,10 @@ public class Ui {
      */
     public Ui(String taskPath, String walletPath) {
 
-        this.storetask = new StorageTask(taskPath);
-        this.storewallet = new StorageWallet(walletPath);
-        this.taskList = this.storetask.loadData();
-        this.wallet = this.storewallet.loadData();
-        //this.wallet = new Wallet();
+        this.taskStore = new StorageTask(taskPath);
+        this.walletStore = new StorageWallet(walletPath);
+        this.taskList = this.taskStore.loadData();
+        this.wallet = this.walletStore.loadData();
         this.scanner = new Scanner(System.in);
         this.exitRequest = false;
         this.userInputHistory = new ArrayList<String>();
@@ -48,7 +44,7 @@ public class Ui {
     /**
      * Method to start the Ui.
      */
-    public void initialise() {
+    public void initialize() {
         printWelcomeMsg();
         while (!this.exitRequest) {
             this.interact(this.taskList, this.wallet);
@@ -82,8 +78,8 @@ public class Ui {
      */
     private void exitUi() {
         this.scanner.close();
-        this.storetask.saveData(this.taskList);
-        this.storewallet.saveData(this.wallet);
+        this.taskStore.saveData(this.taskList);
+        this.walletStore.saveData(this.wallet);
         this.exitRequest = true;
     }
 
