@@ -12,7 +12,6 @@ public enum CommandType {
     VIEWSCHEDULE(CommandSchedule.class),
     REMINDER(CommandReminder.class),
     BALANCE(CommandDisplayBalance.class),
-    SORT(CommandSort.class),
     IN(CommandAddIncomeReceipt.class),
     OUT(CommandAddSpendingReceipt.class),
     SETBALANCE(CommandUpdateBalance.class),
@@ -22,8 +21,14 @@ public enum CommandType {
     EVENT(CommandNewTask.class),
     TODO(CommandNewTask.class),
     RECUR(CommandNewTask.class),
+    FDURATION(CommandNewTask.class),
+    TAGLIST(CommandListTag.class),
+    EXPENDEDMONTH(CommandGetSpendingByMonth.class),
+    EXPENDEDYEAR(CommandGetSpendingByYear.class),
+    CONVERT(CommandConvert.class),
+    LISTMY(CommandListMonYear.class),
     ERROR(CommandError.class),
-    FDURATION(CommandNewTask.class);
+    WEATHER(CommandWeather.class);
 
     private final Class commandClass;
 

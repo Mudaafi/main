@@ -1,11 +1,13 @@
 package main;
 
 import executor.task.TaskList;
-import storage.Storage;
+import storage.StorageTask;
+import storage.StorageWallet;
 import ui.Ui;
 
 public class Duke {
-    protected static Storage storage;
+    protected static StorageTask storetask;
+    protected static StorageWallet storewallet;
     protected static Ui ui;
     protected static TaskList taskList;
 
@@ -17,7 +19,7 @@ public class Duke {
     }
 
     private static void initialise() {
-        ui = new Ui("savedData.txt");
+        ui = new Ui("savedTask.txt", "savedWallet.txt");
         ui.initialise();
     }
 }

@@ -1,8 +1,8 @@
 package executor.command;
 
 import executor.task.TaskList;
-import interpreter.Parser;
 import ui.Receipt;
+import ui.Ui;
 import ui.Wallet;
 
 import java.time.LocalDate;
@@ -20,7 +20,7 @@ public class CommandAddSpendingReceipt extends CommandAddReceipt {
         this.cash = extractIncome(this.commandType, this.userInput);
         this.date = extractDate(this.userInput);
         this.tags = extractTags(this.userInput);
-        this.description = "You can add a new spendings receipt in format of 'Out $5.00 /tags tag'.";;
+        this.description = "You can add a new spendings receipt in format of 'Out $5.00 /date 2019-02-01 /tags tag'.";;
     }
 
     @Override
@@ -30,6 +30,8 @@ public class CommandAddSpendingReceipt extends CommandAddReceipt {
     @Override
     public void execute(Wallet wallet) {
         Receipt r = new Receipt(this.cash, this.date, this.tags);
+        wallet.addReceipt(r);
+        Ui.dukeSays("Added Receipt: $" + r.getCashSpent().toString() + "with tags: " + r.getTags().toString());
     }
 
 }
