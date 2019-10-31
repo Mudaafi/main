@@ -3,6 +3,7 @@ package ui.gui;
 import executor.task.Task;
 import executor.task.TaskList;
 import interpreter.Interpreter;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -57,8 +58,7 @@ public class MainWindow extends AnchorPane {
     private ArrayList<String> userInputHistory;
     private ObservableList<PieChart.Data> pieChartData;
 
-    @FXML
-    public void initialize(String taskPath, String walletPath) {
+    void initialize(String taskPath, String walletPath) {
         this.exitRequest = false;
         this.userInputHistory = new ArrayList<>();
         this.taskStore = new StorageTask(taskPath);
@@ -66,10 +66,6 @@ public class MainWindow extends AnchorPane {
         this.taskList = this.taskStore.loadData();
         this.wallet = this.walletStore.loadData();
 
-        //test
-        this.wallet = new Wallet();
-        this.wallet.setBalance(500.0);
-        this.wallet.addReceipt(new Receipt(100.0));
         this.displayTasks(taskList);
         this.extractPieChartData();
         this.displayBalancePieChart();
@@ -85,8 +81,10 @@ public class MainWindow extends AnchorPane {
         this.updateBalanceChart(this.wallet);
         this.displayTasks(this.taskList);
         userInput.clear();
+        this.taskStore.saveData(this.taskList);
+        this.walletStore.saveData(this.wallet);
         if (this.exitRequest) {
-            this.exitGui();
+            Platform.exit();
         }
     }
 
@@ -100,6 +98,9 @@ public class MainWindow extends AnchorPane {
     }
 
     private void extractPieChartData() {
+        if (this.wallet.getBalance() == 0) {
+            this.wallet.setBalance(0.1);
+        }
         pieChartData = FXCollections.observableArrayList(
                 new PieChart.Data("Expenses",
                         this.wallet.getTotalExpenses()),
@@ -214,8 +215,4 @@ public class MainWindow extends AnchorPane {
         return false;
     }
 
-    private void exitGui() {
-        this.taskStore.saveData(this.taskList);
-        this.walletStore.saveData(this.wallet);
-    }
 }

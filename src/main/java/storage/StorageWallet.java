@@ -33,6 +33,7 @@ public class StorageWallet {
     public void saveData(Wallet wallet) {
         try {
             FileWriter writer = new FileWriter(this.filePath);
+            writer.write(wallet.getBalance().toString() + "\n");
             for (Receipt receipt : wallet.getReceipts()) {
                 String strSave = Parser.encodeReceipt(receipt);
                 writer.write(strSave);
@@ -54,6 +55,14 @@ public class StorageWallet {
         try {
             File file = new File(this.filePath);
             Scanner scanner = new Scanner(file);
+            String storedBalanceStr = scanner.nextLine();
+            Double storedBalanceDouble = 0.10;
+            try {
+                storedBalanceDouble = Double.parseDouble(storedBalanceStr);
+            } catch (Exception e) {
+                System.out.println("Balance cannot be read");
+            }
+            wallet.setBalance(storedBalanceDouble);
             Receipt newReceipt;
             while (scanner.hasNextLine()) {
                 try {

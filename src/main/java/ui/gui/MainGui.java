@@ -1,21 +1,24 @@
 package ui.gui;
 
+import executor.task.TaskList;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import main.Duke;
+import storage.StorageTask;
+import storage.StorageWallet;
+import ui.Wallet;
 
 import java.io.IOException;
 
 public class MainGui extends Application {
-    private String taskPath;
-    private String walletPath;
+    private String taskPath = "savedTask.txt";
+    private String walletPath = "savedWallet.txt";
 
-    public void initialize(String[] args, String taskPath, String walletPath) {
-        this.taskPath = taskPath;
-        this.walletPath = walletPath;
+    public void initialize(String[] args) {
         Application.launch(MainGui.class, args);
     }
 
@@ -32,10 +35,5 @@ public class MainGui extends Application {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    @Override
-    public void stop() {
-
     }
 }

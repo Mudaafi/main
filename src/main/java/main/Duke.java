@@ -24,6 +24,6 @@ public class Duke {
 
     private static void initializeGui(String[] args) {
         gui = new MainGui();
-        gui.initialize(args, "savedTask.txt", "savedWallet.txt");
+        gui.initialize(args);
     }
 }
