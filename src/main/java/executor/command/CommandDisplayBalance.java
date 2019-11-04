@@ -1,14 +1,10 @@
 package executor.command;
 
-import executor.task.TaskList;
-import ui.Ui;
-import ui.Wallet;
+import ui.gui.MainWindow;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 
 public class CommandDisplayBalance extends Command {
-
     // Constructor
     /**
      * Constructor for CommandDisplayBalance subCommand Class.
@@ -21,14 +17,10 @@ public class CommandDisplayBalance extends Command {
     }
 
     @Override
-    public void execute(TaskList taskList) {
-    }
-
-    @Override
-    public void execute(Wallet wallet) {
+    public void execute(MainWindow gui) {
         DecimalFormat decimalFormat = new DecimalFormat("#0.00");
-        System.out.println("Your Balance: $"
-                + decimalFormat.format(wallet.getBalance())
+        gui.printToDisplay("Your Balance: $"
+                + decimalFormat.format(gui.getWallet().getBalance())
         );
     }
 }

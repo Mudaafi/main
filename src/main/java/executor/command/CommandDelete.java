@@ -1,8 +1,6 @@
 package executor.command;
 
-import executor.task.TaskList;
-import ui.Ui;
-import ui.Wallet;
+import ui.gui.MainWindow;
 
 public class CommandDelete extends Command {
     protected String userInput;
@@ -19,23 +17,18 @@ public class CommandDelete extends Command {
     }
 
     @Override
-    public void execute(TaskList taskList) {
+    public void execute(MainWindow gui) {
         try {
-            int index = Integer.valueOf(userInput.replace("delete", "").trim()) - 1;
-            Ui.dukeSays("Task '"
+            int index = Integer.parseInt(userInput.replace("delete", "").trim()) - 1;
+            gui.displayToast("Task '"
                     + String.valueOf(index + 1)
                     + ") "
-                    + taskList.getList().get(index).getTaskName()
+                    + gui.getTaskList().getList().get(index).getTaskName()
                     + "' deleted"
             );
-            taskList.deleteTaskByIndex(index);
+            gui.getTaskList().deleteTaskByIndex(index);
         } catch (Exception e) {
-            Ui.dukeSays("Invalid 'delete' statement. Please indicate the index of the task you wish to mark delete.");
+            gui.displayToast("Invalid 'delete' statement. Please indicate the index of the task you wish to mark delete.");
         }
-    }
-
-    @Override
-    public void execute(Wallet wallet) {
-
     }
 }

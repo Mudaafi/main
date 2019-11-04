@@ -13,7 +13,6 @@ public class StorageTask {
 
     /**
      * * Constrctor for the 'StorageTask' Class.
-     *
      * @param filePath The file path to be used to store and load data
      */
     public StorageTask(String filePath) {
@@ -22,7 +21,6 @@ public class StorageTask {
 
     /**
      * Method to save the current list of tasks.
-     *
      * @param taskList TaskList class
      */
     public void saveData(TaskList taskList) {
@@ -40,7 +38,6 @@ public class StorageTask {
 
     /**
      * Method to load previously saved list of tasks.
-     *
      * @return TaskList class
      */
     public TaskList loadData() {
@@ -50,8 +47,11 @@ public class StorageTask {
             Scanner scanner = new Scanner(file);
             Task newTask;
             while (scanner.hasNextLine()) {
+                String loadedInput = scanner.nextLine();
+                if (loadedInput.equals("")) {
+                    break;
+                }
                 try {
-                    String loadedInput = scanner.nextLine();
                     newTask = loadTaskFromStorageString(loadedInput);
                     taskList.addTask(newTask);
                 } catch (Exception e) {

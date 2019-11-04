@@ -1,10 +1,9 @@
 package executor.command;
 
-import executor.task.TaskList;
 import interpreter.Parser;
 import ui.ReceiptTracker;
-import ui.Ui;
-import ui.Wallet;
+import ui.gui.MainWindow;
+
 import java.text.DecimalFormat;
 
 public class CommandTagList extends CommandList {
@@ -24,15 +23,10 @@ public class CommandTagList extends CommandList {
     }
 
     @Override
-    public void execute(TaskList taskList) {
-
-    }
-
-    @Override
-       public void execute(Wallet wallet) {
-        ReceiptTracker taggedReceipts = wallet.getReceipts().findReceiptsByTag(this.tag);
+       public void execute(MainWindow gui) {
+        ReceiptTracker taggedReceipts = gui.getWallet().getReceipts().findReceiptsByTag(this.tag);
         DecimalFormat decimalFormat = new DecimalFormat("#0.00");
-        Ui.dukeSays("You spent a total of $"
+        gui.dukeSays("You spent a total of $"
                 +
                 decimalFormat.format(taggedReceipts.getTotalCashSpent())
                 + " "
@@ -40,8 +34,8 @@ public class CommandTagList extends CommandList {
                 + " "
                 + tag
         );
-        Ui.printSeparator();
-        taggedReceipts.printReceipts();
-        Ui.printSeparator();
+        gui.printSeparator();
+        gui.printToDisplay(taggedReceipts.getPrintableReceipts());
+        gui.printSeparator();
     }
 }

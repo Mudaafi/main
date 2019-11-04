@@ -3,8 +3,7 @@ package executor.command;
 import executor.task.Task;
 import executor.task.TaskList;
 import interpreter.Parser;
-import ui.Ui;
-import ui.Wallet;
+import ui.gui.MainWindow;
 
 public class CommandQueue extends Command {
     protected String userInput;
@@ -20,25 +19,22 @@ public class CommandQueue extends Command {
     }
 
     @Override
-    public void execute(Wallet wallet) {
-    }
-
-    @Override
-    public void execute(TaskList taskList) {
+    public void execute(MainWindow gui) {
         TaskList throwaway = new TaskList();
         String[] parsedInput = Parser.removeStr(this.commandType.toString(), this.userInput)
                 .split(" ", 2);
         int mainTaskIndex = Integer.parseInt(parsedInput[0]) - 1;
-        Task mainTask = taskList.getList().get(mainTaskIndex);
+        Task mainTask = gui.getTaskList().getList().get(mainTaskIndex);
         String taskString = parsedInput[1].trim();
         CommandType commandType = Parser.parseForCommandType(taskString);
         Command createNewTaskCommand = Executor.createCommand(commandType, taskString);
         if (createNewTaskCommand.commandType != CommandType.TASK) {
-            Ui.dukeSays("No Task detected after 'Queue'.");
+            gui.displayToast("No Task detected after 'Queue'.");
             return;
         }
         initializeQueue(mainTask);
-        createNewTaskCommand.execute(mainTask.getQueuedTasks());
+        createNewTaskCommand.setTaskList(mainTask.getQueuedTasks());
+        createNewTaskCommand.execute(gui);
     }
 
     /**

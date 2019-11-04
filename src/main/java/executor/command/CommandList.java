@@ -1,11 +1,8 @@
 package executor.command;
 
-import executor.task.TaskList;
-import ui.Ui;
-import ui.Wallet;
+import ui.gui.MainWindow;
 
 public class CommandList extends Command {
-
     // Constructor
     /**
      * Constructor for CommandList subCommand Class.
@@ -18,21 +15,19 @@ public class CommandList extends Command {
     }
 
     @Override
-    public void execute(TaskList taskList) {
-        Ui.dukeSays("You have ("
-                + String.valueOf(taskList.getSize())
+    public void execute(MainWindow gui) {
+        gui.printToDisplay("You have ("
+                + String.valueOf(gui.getTaskList().getSize())
                 + ") Tasks in your list!"
         );
-        taskList.printTasks();
-        Ui.printSeparator();
-    }
+        gui.printToDisplay(gui.getTaskList().getPrintableTasks());
+        gui.printToDisplay("\n");
 
-    @Override
-    public void execute(Wallet wallet) {
-        Ui.dukeSays("You have ("
-                + wallet.getReceipts().size()
+        gui.dukeSays("You have ("
+                + gui.getWallet().getReceipts().size()
                 + ") receipts!"
         );
-        wallet.getReceipts().printReceipts();
+        gui.printToDisplay(gui.getWallet().getReceipts().getPrintableReceipts());
+        gui.printSeparator();
     }
 }

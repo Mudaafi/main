@@ -1,12 +1,9 @@
 package main;
 
 import executor.task.TaskList;
-import javafx.application.Application;
-import ui.Ui;
 import ui.gui.MainGui;
 
 public class Duke {
-    protected static Ui ui;
     protected static MainGui gui;
     protected static TaskList taskList;
 
@@ -15,11 +12,6 @@ public class Duke {
      */
     public static void main(String[] args) {
         initializeGui(args);
-    }
-
-    private static void initializeUi() {
-        ui = new Ui("savedTask.txt", "savedWallet.txt");
-        ui.initialize();
     }
 
     private static void initializeGui(String[] args) {

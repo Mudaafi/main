@@ -9,6 +9,7 @@ public abstract class Command {
     protected String userInput = null;
     protected CommandType commandType;
     protected String description = "NO DESCRIPTION";
+    protected TaskList taskList;
 
     // Constructor
     public Command() {
@@ -34,5 +35,9 @@ public abstract class Command {
 
     public CommandType getCommandType() {
         return commandType;
+    }
+
+    public void setTaskList(TaskList taskList) {
+        this.taskList = taskList;
     }
 }

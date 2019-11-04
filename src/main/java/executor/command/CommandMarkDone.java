@@ -3,11 +3,11 @@ package executor.command;
 import executor.task.Task;
 import executor.task.TaskList;
 import interpreter.Parser;
-import ui.Ui;
-import ui.Wallet;
+import ui.gui.MainWindow;
 
 public class CommandMarkDone extends Command {
     private String userInput;
+    private MainWindow gui;
 
     // Constructor
     /**
@@ -18,28 +18,20 @@ public class CommandMarkDone extends Command {
         this.userInput = userInput;
         this.description = "Marks a certain task as done";
         this.commandType = CommandType.DONE;
-
     }
 
     @Override
-    public void execute(Wallet wallet) {
-
-    }
-
-    @Override
-    public void execute(TaskList taskList) {
+    public void execute(MainWindow gui) {
         try {
             int index = Integer.parseInt(Parser.removeStr("done", this.userInput)) - 1;
-            Task mainTask = taskList.getList().get(index);
+            Task mainTask = gui.getTaskList().getList().get(index);
             mainTask.markDone();
-            loadQueuedTasks(taskList, mainTask);
-            Ui.dukeSays(genMarkDoneReply(index, taskList));
+            loadQueuedTasks(gui.getTaskList(), mainTask);
+            gui.displayToast(genMarkDoneReply(index, gui.getTaskList()));
         } catch (Exception e) {
-            Ui.dukeSays("Invalid 'done' statement. Please indicate the index of the task you wish to mark done.");
+            gui.displayToast("Invalid 'done' statement. Please indicate the index of the task you wish to mark done.");
         }
     }
-
-
 
     /**
      * Generates the standard duke reply to inform user that the Task is marked done.

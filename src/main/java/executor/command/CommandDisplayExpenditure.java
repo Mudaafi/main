@@ -1,8 +1,6 @@
 package executor.command;
 
-import executor.task.TaskList;
-import ui.Ui;
-import ui.Wallet;
+import ui.gui.MainWindow;
 
 import java.text.DecimalFormat;
 
@@ -18,14 +16,10 @@ public class CommandDisplayExpenditure extends Command {
     }
 
     @Override
-    public void execute(TaskList taskList) {
-    }
-
-    @Override
-    public void execute(Wallet wallet) {
-        double totalExpenses = wallet.getTotalExpenses();
+    public void execute(MainWindow gui) {
+        double totalExpenses = gui.getWallet().getTotalExpenses();
         DecimalFormat decimalFormat = new DecimalFormat("#0.00");
-        System.out.println("Total Expenditure: $"
+        gui.printToDisplay("Total Expenditure: $"
                 + decimalFormat.format(totalExpenses)
         );
     }

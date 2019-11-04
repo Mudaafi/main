@@ -3,10 +3,8 @@ package executor.command;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import executor.task.TaskList;
 import interpreter.Parser;
-import ui.Ui;
-import ui.Wallet;
+import ui.gui.MainWindow;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -20,6 +18,7 @@ import java.util.Map;
 public class CommandWeather extends Command {
     private LinkedHashMap<String, LinkedHashMap<String, String>> fullWeatherData;
     private Set<String> periodsPossible = new HashSet<>(Arrays.asList("now", "later", "tomorrow"));
+    private MainWindow gui;
 
     /**
      * CommandWeather displays weather information based on user request.
@@ -33,13 +32,9 @@ public class CommandWeather extends Command {
     }
     
     @Override
-    public void execute(Wallet wallet) {
+    public void execute(MainWindow gui) {
+        this.gui = gui;
         printWeatherDataOutput();
-    }
-
-    @Override
-    public void execute(TaskList taskList) {
-
     }
 
 
@@ -54,8 +49,8 @@ public class CommandWeather extends Command {
             period = period.toLowerCase();
             return period;
         } else {
-            Ui.dukeSays(getErrorMessage());
-            Ui.dukeSays("However we believe you would want to know the weather forecast for today.");
+            gui.dukeSays(getErrorMessage());
+            gui.dukeSays("However we believe you would want to know the weather forecast for today.");
             return "now";
         }
     }
@@ -84,7 +79,7 @@ public class CommandWeather extends Command {
 
         int size = getLengthOfHashMapToPrint(getWhichWeatherDataUserWants(this.userInput));
         if (this.fullWeatherData != null) {
-            Ui.dukeSays("Duke$$$ has predicted the following weather forecast :");
+            gui.dukeSays("Duke$$$ has predicted the following weather forecast :");
             for (Map.Entry<String, LinkedHashMap<String, String>> weather : this.fullWeatherData.entrySet()) {
                 String weatherKey = weather.getKey();
                 if (Integer.parseInt(weatherKey) < size) {
@@ -96,9 +91,9 @@ public class CommandWeather extends Command {
                     }
                 }
             }
-            Ui.printSeparator();
+            gui.printSeparator();
         } else {
-            Ui.dukeSays("Weather Data not available \n"
+            gui.dukeSays("Weather Data not available \n"
                     + "1. Please ensure that you have active Internet access \n"
                     + "2. Please also ensure that you follow correct format for the user input \n");
         }
@@ -120,7 +115,6 @@ public class CommandWeather extends Command {
             }
             return completeJson;
         } catch (Exception ex) {
-            //ex.printStackTrace();
             return null;
         }
     }

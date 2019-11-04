@@ -5,8 +5,7 @@ import executor.task.Task;
 import executor.task.TaskList;
 import executor.task.TaskType;
 import interpreter.Parser;
-import ui.Ui;
-import ui.Wallet;
+import ui.gui.MainWindow;
 
 public class CommandNewTask extends Command {
     protected String userInput;
@@ -24,23 +23,22 @@ public class CommandNewTask extends Command {
     }
 
     @Override
-    public void execute(Wallet wallet) {
-    }
-
-    @Override
-    public void execute(TaskList taskList) {
+    public void execute(MainWindow gui) {
+        if (this.taskList == null) {
+            this.taskList = gui.getTaskList();
+        }
         try {
             checkForwardSlash(this.userInput);
         } catch (DukeException e) {
-            e.printStackTrace();
+            gui.displayToast("Error Queuing Task");
             return;
         }
         Task newTask = TaskList.createTask(this.taskType, this.userInput);
-        taskList.addTask(newTask);
-        Ui.dukeSays("I've added "
+        this.taskList.addTask(newTask);
+        gui.displayToast("I've added "
                 + newTask.genTaskDesc()
                 + " to your private list("
-                + String.valueOf(taskList.getSize())
+                + String.valueOf(this.taskList.getSize())
                 + ")."
         );
     }

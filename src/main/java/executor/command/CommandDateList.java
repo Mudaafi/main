@@ -1,11 +1,8 @@
 package executor.command;
 
-import executor.task.TaskList;
 import interpreter.Parser;
 import ui.ReceiptTracker;
-import ui.Ui;
-import ui.Wallet;
-
+import ui.gui.MainWindow;
 
 
 public class CommandDateList extends Command {
@@ -24,17 +21,12 @@ public class CommandDateList extends Command {
     }
 
     @Override
-    public void execute(TaskList taskList) {
-
-    }
-
-    @Override
-    public void execute(Wallet wallet) {
-        ReceiptTracker dateReceipts = wallet.getReceipts().findReceiptsByDate(this.date);
-        Ui.dukeSays("You have the following receipts for" + " " + date);
-        Ui.printSeparator();
-        dateReceipts.printReceipts();
-        Ui.printSeparator();
+    public void execute(MainWindow gui) {
+        ReceiptTracker dateReceipts = gui.getWallet().getReceipts().findReceiptsByDate(this.date);
+        gui.dukeSays("You have the following receipts for" + " " + date);
+        gui.printSeparator();
+        gui.printToDisplay(dateReceipts.getPrintableReceipts());
+        gui.printSeparator();
     }
 
 }

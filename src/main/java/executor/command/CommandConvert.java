@@ -97,7 +97,7 @@ public class CommandConvert extends Command {
             }
             return completeJson;
         } catch (Exception ex) {
-            gui.dukeSays("Please enter a valid country code \n");
+            gui.displayToast("Please enter a valid country code \n");
             return null;
         }
     }
@@ -116,7 +116,7 @@ public class CommandConvert extends Command {
             double exRate = exchangeRate.doubleValue();
             return exRate;
         } catch (Exception e) {
-            Ui.dukeSays("Please enter a valid country code \n");
+            gui.displayToast("Please enter a valid country code \n");
             return null;
         }
     }
@@ -155,7 +155,7 @@ public class CommandConvert extends Command {
             }
             return url;
         } catch (Exception e) {
-            Ui.dukeSays("Please enter a valid country code \n");
+            gui.displayToast("Please enter a valid country code \n");
             return null;
         }
     }
@@ -182,7 +182,7 @@ public class CommandConvert extends Command {
                 return convertedAmount;
             }
         } catch (Exception e) {
-            Ui.dukeSays("Please enter a valid country code \n");
+            gui.displayToast("Please enter a valid country code \n");
             return null;
         }
     }
@@ -206,7 +206,7 @@ public class CommandConvert extends Command {
             setExchangeRate(originalToOutputExRate);
             return convertedAmount;
         } catch (Exception e) {
-            Ui.dukeSays("Please enter a valid country code \n");
+            gui.displayToast("Please enter a valid country code \n");
             return null;
         }
     }
@@ -231,9 +231,7 @@ public class CommandConvert extends Command {
                 }
             }
         } catch (Exception e) {
-            Ui.dukeSays(e.getMessage());
-            Ui.dukeSays(Ui.LINE);
-            Ui.dukeSays("Please enter in the following format : "
+            gui.displayToast("Please enter in the following format : "
                     + "convert 2000 /from USD /to EUR");
         }
         return null;

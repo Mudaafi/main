@@ -1,8 +1,6 @@
 package executor.command;
 
-import executor.task.TaskList;
-import ui.Ui;
-import ui.Wallet;
+import ui.gui.MainWindow;
 
 public class CommandHelp extends Command {
 
@@ -16,20 +14,16 @@ public class CommandHelp extends Command {
     }
 
     @Override
-    public void execute(TaskList taskList) {
+    public void execute(MainWindow gui) {
         for (String s : CommandType.getNames()) {
             if (!s.equals("ERROR") && !s.equals("TASK") && !s.equals("BLANK")) {
                 CommandType commandType = CommandType.valueOf(s);
                 Command c = Executor.createCommand(commandType, "null");
                 String commandDesc = c.getDescription();
 
-                System.out.println(s.toUpperCase() + " - " + commandDesc);
+                gui.printToDisplay(s.toUpperCase() + " - " + commandDesc);
             }
         }
-        Ui.printSeparator();
-    }
-
-    @Override
-    public void execute(Wallet wallet) {
+        gui.printSeparator();
     }
 }

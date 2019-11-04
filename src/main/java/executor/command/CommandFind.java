@@ -2,8 +2,7 @@ package executor.command;
 
 import executor.task.TaskList;
 import interpreter.Parser;
-import ui.Ui;
-import ui.Wallet;
+import ui.gui.MainWindow;
 
 public class CommandFind extends Command {
     protected String userInput;
@@ -19,41 +18,38 @@ public class CommandFind extends Command {
     }
 
     @Override
-    public void execute(Wallet wallet) {
-
-    }
-
-    @Override
-    public void execute(TaskList taskList) {
+    public void execute(MainWindow gui) {
         try {
             String queryInput = Parser.removeStr("find", this.userInput);
             queryInput = queryInput.toLowerCase();
-            Ui.dukeSays("Here are the Tasks matching your query '"
+            gui.printToDisplay("Here are the Tasks matching your query '"
                     + queryInput
                     + "'."
             );
-            findTasks(queryInput, taskList);
+            gui.printToDisplay(getPrintableTasksByName(queryInput, gui.getTaskList()));
         } catch (Exception e) {
-            Ui.dukeSays("No such task found.");
+            gui.displayToast("No such task found.");
         }
-        Ui.printSeparator();
+        gui.printSeparator();
     }
 
     /**
      * Finds and prints each task that contains the string.
-     *
      * @param name     The substring to be found
      * @param taskList The TaskList containing the Tasks.
+     * @return String representing the output
      */
-    public void findTasks(String name, TaskList taskList) {
+    private String getPrintableTasksByName(String name, TaskList taskList) {
+        StringBuilder outputStr = new StringBuilder();
         for (int index = 0; index < taskList.getSize(); ++index) {
             try {
                 if (taskList.getList().get(index).getTaskName().toLowerCase().contains(name)) {
-                    taskList.printTaskByIndex(index);
+                    outputStr.append(taskList.getPrintableTasksByIndex(index));
                 }
             } catch (Exception e) {
-                System.out.println("Read invalid taskName");
+                outputStr.append("Read invalid taskName");
             }
         }
+        return outputStr.toString();
     }
 }

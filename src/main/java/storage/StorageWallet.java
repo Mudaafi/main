@@ -1,13 +1,10 @@
 package storage;
 
-import ui.Wallet;
-import ui.ReceiptTracker;
 import ui.Receipt;
 import interpreter.Parser;
 import executor.command.Executor;
-import executor.command.CommandAddIncomeReceipt;
-import executor.command.CommandAddSpendingReceipt;
 import executor.command.CommandType;
+import ui.gui.MainWindow;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -27,17 +24,15 @@ public class StorageWallet {
 
     /**
      * Method to save the current list of receipts.
-     *
-     * @param wallet Wallet class
+     * @param gui Graphical User Interface that Contains a Wallet Object
      */
-    public void saveData(Wallet wallet) {
+    public void saveData(MainWindow gui) {
         try {
             FileWriter writer = new FileWriter(this.filePath);
-            writer.write(wallet.getBalance().toString() + "\n");
-            for (Receipt receipt : wallet.getReceipts()) {
+            writer.write(gui.getWallet().getBalance().toString() + "\n");
+            for (Receipt receipt : gui.getWallet().getReceipts()) {
                 String strSave = Parser.encodeReceipt(receipt);
                 writer.write(strSave);
-                //writer.append(strSave);
             }
             writer.close();
         } catch (Exception e) {
@@ -47,11 +42,9 @@ public class StorageWallet {
 
     /**
      * Method to load previously saved list of receipts.
-     *
-     * @return Wallet class
+     * @param gui Graphical User Interface that Contains a Wallet Object
      */
-    public Wallet loadData() {
-        Wallet wallet = new Wallet();
+    public void loadData(MainWindow gui) {
         try {
             File file = new File(this.filePath);
             Scanner scanner = new Scanner(file);
@@ -62,12 +55,15 @@ public class StorageWallet {
             } catch (Exception e) {
                 System.out.println("Balance cannot be read");
             }
-            wallet.setBalance(storedBalanceDouble);
-            Receipt newReceipt;
+            gui.getWallet().setBalance(storedBalanceDouble);
+
             while (scanner.hasNextLine()) {
+                String loadedInput = scanner.nextLine();
+                if (loadedInput.equals("")) {
+                    break;
+                }
                 try {
-                    String loadedInput = scanner.nextLine();
-                    wallet = parseAddReceiptFromStorageString(wallet, loadedInput);
+                    parseAddReceiptFromStorageString(gui, loadedInput);
                 } catch (Exception e) {
                     System.out.println(e);
                 }
@@ -75,17 +71,15 @@ public class StorageWallet {
         } catch (Exception e) {
             System.out.println("No Previously saved wallet Data.");
         }
-        return wallet;
     }
 
     /**
      * Converts saved String in StorageWallet to actual Receipt object and saves in Wallet Object.
+     * @param gui The Graphical User Interface that contains a Wallet Object.
      * @param loadedInput The saved String to be converted
      */
-    public Wallet parseAddReceiptFromStorageString(Wallet wallet, String loadedInput) {
-
+    public void parseAddReceiptFromStorageString(MainWindow gui, String loadedInput) {
         CommandType commandtype = Parser.parseForCommandType(loadedInput);
-        Executor.runCommand(null, wallet, commandtype, loadedInput);
-        return wallet;
+        Executor.runCommand(gui, commandtype, loadedInput);
     }
 }

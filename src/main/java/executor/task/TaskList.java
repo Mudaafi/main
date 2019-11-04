@@ -16,7 +16,6 @@ public class TaskList {
 
     /**
      * Deletes a task via its index.
-     *
      * @param index Index of the task to be deleted
      */
     public void deleteTaskByIndex(int index) {
@@ -25,7 +24,6 @@ public class TaskList {
 
     /**
      * Adds a new task to the List.
-     *
      * @param newTask The Task Object to be added
      */
     public void addTask(Task newTask) {
@@ -34,14 +32,13 @@ public class TaskList {
 
     /**
      * Finds and prints each task that contains the string.
-     *
      * @param name The substring to be found.
      */
     public void findTasks(String name) {
         for (int index = 0; index < this.taskList.size(); ++index) {
             try {
                 if (this.taskList.get(index).taskName.contains(name)) {
-                    printTaskByIndex(index);
+                    getPrintableTasksByIndex(index);
                 }
             } catch (Exception e) {
                 System.out.println("Read invalid taskName");
@@ -51,20 +48,21 @@ public class TaskList {
 
     /**
      * Prints tasks from Duke.taskList based on the index provided.
-     *
      * @param indexes Varargs The indexes of tasks from taskList to be printed.
+     * @return String representing the Task found
      */
-    public void printTaskByIndex(int... indexes) {
+    public String getPrintableTasksByIndex(int... indexes) {
+        StringBuilder outputStr = new StringBuilder();
         for (int index : indexes) {
-            System.out.println(String.valueOf(index + 1) + ". "
+            outputStr.append(String.valueOf(index + 1) + ". "
                     + this.taskList.get(index).genTaskDesc());
         }
+        return outputStr.toString();
     }
 
     /**
      * Initializes a 'Task' subclass based on TaskType.
      * TODO: Think about how this can be neater.
-     *
      * @param taskDesc The task description from the user input
      * @param taskType TaskType enum that specifies the subclass to create
      */
@@ -130,18 +128,21 @@ public class TaskList {
 
     /**
      * Prints each task in the taskList.
+     * @return String with all the tasks to be printed.
      */
-    public void printTasks() {
+    public String getPrintableTasks() {
+        StringBuilder outputStr = new StringBuilder();
         for (int index = 0; index < this.taskList.size(); ++index) {
             try {
-                System.out.println((index + 1)
+                outputStr.append((index + 1)
                                  + ". "
                                  + this.taskList.get(index).genTaskDesc()
                 );
             } catch (Exception e) {
-                System.out.println("Unable to print Task "
+                outputStr.append("Unable to print Task "
                          + String.valueOf(index + 1));
             }
         }
+        return outputStr.toString();
     }
 }

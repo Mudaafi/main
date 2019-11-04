@@ -199,11 +199,13 @@ public class ReceiptTracker extends ArrayList<Receipt> {
 
     /**
      * Prints all the receipts stored in the ReceiptTracker Object.
+     * @return String representing all the receipts to be printed.
      */
-    public void printReceipts() {
+    public String getPrintableReceipts() {
+        StringBuilder outputStr = new StringBuilder();
         for (int index = 0; index < this.size(); ++index) {
             try {
-                System.out.println((index + 1)
+                outputStr.append((index + 1)
                         + ". "
                         + this.get(index).getTags()
                         + " "
@@ -212,10 +214,11 @@ public class ReceiptTracker extends ArrayList<Receipt> {
                         + this.get(index).getDate()
                 );
             } catch (Exception e) {
-                System.out.println("Unable to print Receipt "
+                outputStr.append("Unable to print Receipt "
                         + String.valueOf(index + 1)
                 );
             }
         }
+        return outputStr.toString();
     }
 }

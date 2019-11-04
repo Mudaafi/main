@@ -1,8 +1,6 @@
 package executor.command;
 
-import executor.task.TaskList;
-import ui.Ui;
-import ui.Wallet;
+import ui.gui.MainWindow;
 
 public class CommandError extends Command {
     // Constructor
@@ -20,13 +18,8 @@ public class CommandError extends Command {
      * Executes a particular Command.
      */
     @Override
-    public void execute(TaskList taskList) {
-        Ui.dukeSays("Please enter a valid Command. Type 'help' to see the list of Commands");
-        Ui.printSeparator();
-    }
-
-    @Override
-    public void execute(Wallet wallet) {
-
+    public void execute(MainWindow gui) {
+        gui.displayToast("Please enter a valid Command. Type 'help' to see the list of Commands");
+        gui.printSeparator();
     }
 }

@@ -1,31 +1,21 @@
 package ui.gui;
 
-import executor.task.Task;
 import executor.task.TaskList;
 import interpreter.Interpreter;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
-import javafx.scene.chart.*;
-import javafx.scene.control.Label;
+
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import storage.StorageTask;
 import storage.StorageWallet;
-import ui.ReceiptTracker;
 import ui.Wallet;
-
-import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class MainWindow extends AnchorPane {
 
@@ -44,7 +34,7 @@ public class MainWindow extends AnchorPane {
     private StorageTask taskStore;
     private StorageWallet walletStore;
     private TaskList taskList;
-    private Wallet wallet;
+    private Wallet wallet = new Wallet();
     private ArrayList<String> userInputHistory;
     private Stage mainStage;
     private DisplayType displayType;
@@ -59,7 +49,7 @@ public class MainWindow extends AnchorPane {
         this.taskStore = new StorageTask(taskPath);
         this.walletStore = new StorageWallet(walletPath);
         this.taskList = this.taskStore.loadData();
-        this.wallet = this.walletStore.loadData();
+        this.walletStore.loadData(this);
 
         this.fetchStoredImages();
         this.showHomeDisplay();
@@ -84,8 +74,6 @@ public class MainWindow extends AnchorPane {
         }
         this.userInput.clear();
         if (this.exitRequest) {
-            this.taskStore.saveData(this.taskList);
-            this.walletStore.saveData(this.wallet);
             Platform.exit();
         }
     }
@@ -170,5 +158,15 @@ public class MainWindow extends AnchorPane {
     public void printToDisplay(String string) {
         this.showCliDisplay();
         this.cliController.printToDisplay(string);
+    }
+
+    public void printSeparator() {
+        this.showCliDisplay();
+        this.cliController.printSeparator();
+    }
+
+    public void saveAllData() {
+        this.taskStore.saveData(this.taskList);
+        this.walletStore.saveData(this);
     }
 }

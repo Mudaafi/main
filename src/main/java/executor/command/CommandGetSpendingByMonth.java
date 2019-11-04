@@ -1,10 +1,8 @@
 package executor.command;
 
-import executor.task.TaskList;
 import interpreter.Parser;
 import ui.ReceiptTracker;
-import ui.Ui;
-import ui.Wallet;
+import ui.gui.MainWindow;
 
 public class CommandGetSpendingByMonth extends Command {
     protected String userInput;
@@ -19,23 +17,19 @@ public class CommandGetSpendingByMonth extends Command {
         this.description = "Provides the user the total expenditure for the month stated. "
                 + "FORMAT: expendedmonth <month> /year<year>";
     }
-    
-    @Override
-    public void execute(TaskList taskList) {
-    }
 
     @Override
-    public void execute(Wallet wallet) {
+    public void execute(MainWindow gui) {
         ReceiptTracker receiptsInMonth = new ReceiptTracker();
         String monthStr = Parser.parseForPrimaryInput(CommandType.EXPENDEDMONTH, userInput);
         int month = monthStrToInt(monthStr);
         if (month != 0) {
             int year = Integer.parseInt(Parser.parseForFlag("year", userInput));
-            receiptsInMonth = wallet.getReceipts().findReceiptByMonthYear(month, year);
+            receiptsInMonth = gui.getWallet().getReceipts().findReceiptByMonthYear(month, year);
             Double totalMoney = receiptsInMonth.getTotalCashSpent();
-            Ui.dukeSays("The total amount of money spent in " + monthStr + " " + year + " : " + totalMoney);
+            gui.displayToast("The total amount of money spent in " + monthStr + " " + year + " : " + totalMoney);
         } else {
-            Ui.dukeSays("Invalid input, CORRECT FORMAT : expendedmonth <month> <year> ");
+            gui.displayToast("Invalid input, CORRECT FORMAT : expendedmonth <month> <year> ");
         }
     }
 
