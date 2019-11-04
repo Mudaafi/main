@@ -4,7 +4,6 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.VBox?>
@@ -14,6 +13,7 @@
 <?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.chart.StackedBarChart?>
 
+<?import javafx.scene.layout.StackPane?>
 <AnchorPane fx:id="mainPain"
             maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
             mouseTransparent="false" prefHeight="600.0" prefWidth="642.0" style="-fx-background-color: #ede7d1;"
@@ -66,17 +66,39 @@
                   prefHeight="190.0" prefWidth="254.0"
                   AnchorPane.leftAnchor="30" AnchorPane.topAnchor="50"
                   >
-                <Label fx:id="balanceChartDesc"
-                       alignment="TOP_LEFT"
-                       text="BUDGET: " textFill="#013950">
-                    <font>
-                        <Font name="Constantia" size="11.0"/>
-                    </font>
-                </Label>
-                <DonutChart fx:id="balanceChart"
-                            maxHeight="190.0" prefHeight="190.0" maxWidth="254.0" prefWidth="252.0"
-                            AnchorPane.bottomAnchor="0"
-                />
+                <StackPane prefHeight="190.0" prefWidth="254.0"
+                           AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0"
+                           AnchorPane.bottomAnchor="0" AnchorPane.topAnchor="0">
+
+                    <Label fx:id="balanceChartDesc" StackPane.alignment="TOP_LEFT"
+                           text="BUDGET: " textFill="#013950">
+                        <font>
+                            <Font name="Constantia" size="11.0"/>
+                        </font>
+                    </Label>
+
+                    <DonutChart fx:id="balanceChart"
+                                maxHeight="190.0" prefHeight="190.0" maxWidth="254.0" prefWidth="252.0"
+                                AnchorPane.bottomAnchor="0"
+                    />
+                    <Label fx:id="balanceFigure"
+                           maxWidth="130"
+                           StackPane.alignment="CENTER" style="-fx-padding: 0 0 15 10;"
+                           textFill="#f9bd4d">
+                        <font>
+                            <Font name="Constantia" size="45.0"/>
+                        </font>
+                    </Label>
+
+                    <Label fx:id="balanceIndicator"
+                           StackPane.alignment="CENTER" style="-fx-padding: 35 0 0 80;"
+                           textFill="#013950" text="left">
+                        <font>
+                            <Font name="Constantia" size="10.0"/>
+                        </font>
+                    </Label>
+
+                </StackPane>
             </AnchorPane>
 
             <AnchorPane fx:id="breakdownChartPane"
@@ -92,7 +114,7 @@
                 </Label>
                 <StackedBarChart fx:id="breakdownChart" style="-fx-background-color: #ede7d1;"
                           maxHeight="190.0" prefHeight="180.0" maxWidth="254.0" prefWidth="252.0"
-                            AnchorPane.bottomAnchor="0" AnchorPane.topAnchor="20">
+                        AnchorPane.bottomAnchor="0" AnchorPane.topAnchor="20">
                     <xAxis>
                         <CategoryAxis fx:id="xAxis" side="BOTTOM"/>
                     </xAxis>

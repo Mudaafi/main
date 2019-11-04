@@ -8,6 +8,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.chart.*;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -15,10 +16,10 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import storage.StorageTask;
 import storage.StorageWallet;
-import ui.Receipt;
 import ui.ReceiptTracker;
 import ui.Wallet;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,7 +35,11 @@ public class MainWindow extends AnchorPane {
     @FXML
     private ImageView headerBackground;
     @FXML
+    private Label balanceChartDesc;
+    @FXML
     private DonutChart balanceChart;
+    @FXML
+    private Label balanceFigure;
     @FXML
     private StackedBarChart<String, Double> breakdownChart;
     @FXML
@@ -50,6 +55,7 @@ public class MainWindow extends AnchorPane {
     @FXML
     private VBox taskContainerRight;
 
+    private CommandLineDisplay cliDisplayController;
     private Boolean exitRequest;
     private StorageTask taskStore;
     private StorageWallet walletStore;
@@ -58,29 +64,32 @@ public class MainWindow extends AnchorPane {
     private ArrayList<String> userInputHistory;
     private ObservableList<PieChart.Data> pieChartData;
 
-    void initialize(String taskPath, String walletPath) {
+    void initialize(String taskPath, String walletPath, CommandLineDisplay cliDisplayController) {
         this.exitRequest = false;
         this.userInputHistory = new ArrayList<>();
         this.taskStore = new StorageTask(taskPath);
         this.walletStore = new StorageWallet(walletPath);
         this.taskList = this.taskStore.loadData();
         this.wallet = this.walletStore.loadData();
+        this.cliDisplayController = cliDisplayController;
 
         this.displayTasks(taskList);
         this.extractPieChartData();
-        this.displayBalancePieChart();
+        this.displayBalanceChart();
         this.fetchStoredImages();
         this.displayBreakdownChart();
+
     }
 
     @FXML
     private void handleUserInput() {
         String input = userInput.getText();
         this.userInputHistory.add(input);
+        this.cliDisplayController.display(input);
         this.exitRequest = Interpreter.interpret(this.taskList, this.wallet, input);
         this.updateBalanceChart(this.wallet);
         this.displayTasks(this.taskList);
-        userInput.clear();
+        this.userInput.clear();
         this.taskStore.saveData(this.taskList);
         this.walletStore.saveData(this.wallet);
         if (this.exitRequest) {
@@ -111,15 +120,22 @@ public class MainWindow extends AnchorPane {
     private void updateBalanceChart(Wallet wallet) {
         this.pieChartData.get(0).setPieValue(wallet.getTotalExpenses());
         this.pieChartData.get(1).setPieValue(wallet.getBalance() - wallet.getTotalExpenses());
+
+        DecimalFormat decimalFormat = new DecimalFormat("$#0");
+        this.balanceFigure.setText(decimalFormat.format(this.wallet.getBalance()));
     }
 
-    private void displayBalancePieChart() {
+    private void displayBalanceChart() {
         this.balanceChart.setData(this.pieChartData);
         this.balanceChart.setLegendVisible(false);
         this.balanceChart.setLabelsVisible(false);
         this.balanceChart.setStartAngle(90.0);
         String css = this.getClass().getResource("/css/PieChart.css").toExternalForm();
         this.balanceChart.getStylesheets().add(css);
+
+        DecimalFormat decimalFormat = new DecimalFormat("$#0");
+        this.balanceFigure.setText(decimalFormat.format(this.wallet.getBalance()));
+
     }
 
     private void displayTasks(TaskList taskList) {

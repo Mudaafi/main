@@ -4,6 +4,7 @@ import interpreter.Interpreter;
 import executor.task.TaskList;
 import storage.StorageTask;
 import storage.StorageWallet;
+import ui.gui.CommandLineDisplay;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -29,8 +29,8 @@ public class CommandUpdateBalance extends Command {
 
     @Override
     public void execute(Wallet wallet) {
-        DecimalFormat decimalFormat = new DecimalFormat("#0.00");
         wallet.setBalance(this.newBalance);
+        DecimalFormat decimalFormat = new DecimalFormat("#0.00");
         Ui.dukeSays("Balance updated to: $" + decimalFormat.format(this.newBalance));
         Ui.printSeparator();
     }
