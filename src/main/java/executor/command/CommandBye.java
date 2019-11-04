@@ -1,8 +1,6 @@
 package executor.command;
 
-import executor.task.TaskList;
-import ui.Ui;
-import ui.Wallet;
+import ui.gui.MainWindow;
 
 public class CommandBye extends Command {
 
@@ -18,13 +16,8 @@ public class CommandBye extends Command {
     }
 
     @Override
-    public void execute(TaskList taskList) {
+    public void execute(MainWindow gui) {
         this.exitRequest = true;
-        Ui.dukeSays("Bye. Hope to see you again soon!");
-    }
-
-    @Override
-    public void execute(Wallet wallet) {
-
+        gui.displayToast("Bye. Hope to see you again soon!");
     }
 }

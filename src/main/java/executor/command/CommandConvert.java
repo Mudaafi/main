@@ -6,10 +6,9 @@ import java.math.RoundingMode;
 import java.net.URL;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import executor.task.TaskList;
 import interpreter.Parser;
-import ui.Ui;
-import ui.Wallet;
+import ui.gui.MainWindow;
+
 import java.math.BigDecimal;
 
 /**
@@ -21,6 +20,7 @@ public class CommandConvert extends Command {
     private Double amount;
     private String use;
     private Double exchangeRate = 0.00;
+    private MainWindow gui;
 
     /**
      * Constructor for the CommandConvert class.
@@ -38,15 +38,10 @@ public class CommandConvert extends Command {
     }
 
     @Override
-    public void execute(Wallet wallet) {
+    public void execute(MainWindow gui) {
+        this.gui = gui;
         Double convertedAmount = this.convertCurrency(this.getFrom(), this.getTo(), this.getAmount());
-        Ui.dukeSays(this.result(convertedAmount));
-        Ui.printSeparator();
-    }
-
-    @Override
-    public void execute(TaskList taskList) {
-
+        gui.displayToast(this.result(convertedAmount));
     }
 
     /**
@@ -102,7 +97,7 @@ public class CommandConvert extends Command {
             }
             return completeJson;
         } catch (Exception ex) {
-            Ui.dukeSays("Please enter a valid country code \n");
+            gui.dukeSays("Please enter a valid country code \n");
             return null;
         }
     }

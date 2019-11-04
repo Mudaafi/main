@@ -1,12 +1,7 @@
 package executor.command;
 
-import executor.task.TaskList;
 import ui.Receipt;
-import ui.Ui;
-import ui.Wallet;
-
-import java.time.LocalDate;
-import java.util.ArrayList;
+import ui.gui.MainWindow;
 
 public class CommandAddSpendingReceipt extends CommandAddReceipt {
 
@@ -24,14 +19,11 @@ public class CommandAddSpendingReceipt extends CommandAddReceipt {
     }
 
     @Override
-    public void execute(TaskList taskList) {
-    }
-
-    @Override
-    public void execute(Wallet wallet) {
+    public void execute(MainWindow gui) {
         Receipt r = new Receipt(this.cash, this.date, this.tags);
-        wallet.addReceipt(r);
-        Ui.dukeSays("Added Receipt: $" + r.getCashSpent().toString() + " " + "with tags: " + r.getTags().toString());
+        gui.getWallet().addReceipt(r);
+        gui.displayToast("Added Receipt: $" + r.getCashSpent().toString()
+                + " " + "with tags: " + r.getTags().toString());
     }
 
 }

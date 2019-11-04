@@ -38,20 +38,7 @@ public class MainWindow extends AnchorPane {
     @FXML
     private ImageView headerBackground;
     @FXML
-    private Label balanceChartDesc;
-    @FXML
-    private DonutChart balanceChart;
-    @FXML
-    private Label balanceFigure;
-    @FXML
-    private StackedBarChart<String, Double> breakdownChart;
-
-    @FXML
     private TextField userInput;
-    @FXML
-    private VBox taskContainerLeft;
-    @FXML
-    private VBox taskContainerRight;
 
     private Boolean exitRequest;
     private StorageTask taskStore;
@@ -59,12 +46,14 @@ public class MainWindow extends AnchorPane {
     private TaskList taskList;
     private Wallet wallet;
     private ArrayList<String> userInputHistory;
+    private Stage mainStage;
     private DisplayType displayType;
     private CommandLineDisplay cliController;
     private HomeWindow homeController;
 
-    void initialize(String taskPath, String walletPath) {
+    void initialize(Stage stage, String taskPath, String walletPath) {
         this.exitRequest = false;
+        this.mainStage = stage;
         this.displayType = DisplayType.NONE;
         this.userInputHistory = new ArrayList<>();
         this.taskStore = new StorageTask(taskPath);
@@ -74,6 +63,7 @@ public class MainWindow extends AnchorPane {
 
         this.fetchStoredImages();
         this.showHomeDisplay();
+        this.displayToast("test");
 
     }
 
@@ -81,7 +71,7 @@ public class MainWindow extends AnchorPane {
     private void handleUserInput() {
         String input = this.userInput.getText();
         this.userInputHistory.add(input);
-        this.exitRequest = Interpreter.interpret(this.taskList, this.wallet, input);
+        this.exitRequest = Interpreter.interpret(this, input);
         if (this.displayType == DisplayType.HOME) {
             if (input.equals("cli")) {
                 showCliDisplay();
@@ -94,6 +84,8 @@ public class MainWindow extends AnchorPane {
         }
         this.userInput.clear();
         if (this.exitRequest) {
+            this.taskStore.saveData(this.taskList);
+            this.walletStore.saveData(this.wallet);
             Platform.exit();
         }
     }
@@ -118,13 +110,16 @@ public class MainWindow extends AnchorPane {
         return false;
     }
 
-    private void showHomeDisplay() {
+    public void showHomeDisplay() {
+        if (this.displayType == DisplayType.HOME) {
+            return;
+        }
         try {
             FXMLLoader loaderHomeDisplay = new FXMLLoader(MainGui.class
                     .getResource("/view/HomeWindow.fxml"));
             AnchorPane homeDisplayRoot = loaderHomeDisplay.load();
-            HomeWindow homeDisplayController = loaderHomeDisplay.<HomeWindow>getController();
-            homeDisplayController.initialize(this.userInputHistory, this.taskList, this.wallet);
+            this.homeController = loaderHomeDisplay.<HomeWindow>getController();
+            this.homeController.initialize(this.userInputHistory, this.taskList, this.wallet);
             this.contentPane.getChildren().add(homeDisplayRoot);
             this.displayType = DisplayType.HOME;
         } catch (Exception e) {
@@ -135,13 +130,16 @@ public class MainWindow extends AnchorPane {
         }
     }
 
-    private void showCliDisplay() {
+    public void showCliDisplay() {
+        if (this.displayType == DisplayType.CLI) {
+            return;
+        }
         try {
             FXMLLoader loaderCliDisplay = new FXMLLoader(MainGui.class
                 .getResource("/view/CommandLineDisplay.fxml"));
             AnchorPane cliDisplayRoot = loaderCliDisplay.load();
-            CommandLineDisplay cliDisplayController = loaderCliDisplay.<CommandLineDisplay>getController();
-            cliDisplayController.setStyle();
+            this.cliController = loaderCliDisplay.<CommandLineDisplay>getController();
+            this.cliController.setStyle();
             this.contentPane.getChildren().add(cliDisplayRoot);
             this.displayType = DisplayType.CLI;
         } catch (Exception e) {
@@ -152,4 +150,25 @@ public class MainWindow extends AnchorPane {
         }
     }
 
+    public void displayToast(String string) {
+        Toast.makeText(this.mainStage, string);
+    }
+
+    public Wallet getWallet() {
+        return this.wallet;
+    }
+
+    public TaskList getTaskList() {
+        return this.taskList;
+    }
+
+    public void dukeSays(String string) {
+        this.showCliDisplay();
+        this.cliController.dukeSays(string);
+    }
+
+    public void printToDisplay(String string) {
+        this.showCliDisplay();
+        this.cliController.printToDisplay(string);
+    }
 }

@@ -1,8 +1,6 @@
 package executor.command;
 
-import executor.task.TaskList;
-import ui.Ui;
-import ui.Wallet;
+import ui.gui.MainWindow;
 
 public class CommandBlank extends Command {
 
@@ -13,7 +11,7 @@ public class CommandBlank extends Command {
      */
     public CommandBlank(String userInput) {
         this.userInput = userInput;
-        this.description = "Prints a line separator";
+        this.description = "Does Nothing";
         this.commandType = CommandType.BLANK;
     }
 
@@ -21,12 +19,7 @@ public class CommandBlank extends Command {
      * Executes a particular Command.
      */
     @Override
-    public void execute(TaskList taskList) {
-        Ui.printSeparator();
-    }
-
-    @Override
-    public void execute(Wallet wallet) {
-
+    public void execute(MainWindow gui) {
+        gui.displayToast("No Command Detected");
     }
 }

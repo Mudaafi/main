@@ -25,11 +25,10 @@ public class MainGui extends Application {
     @Override
     public void start(Stage stage) {
         try {
-
             FXMLLoader loaderMain = new FXMLLoader(MainGui.class
                     .getResource("/view/MainWindow.fxml"));
             AnchorPane anchorPane = loaderMain.load();
-            loaderMain.<MainWindow>getController().initialize(this.taskPath, this.walletPath);
+            loaderMain.<MainWindow>getController().initialize(stage, this.taskPath, this.walletPath);
             Scene scene = new Scene(anchorPane);
             stage.setScene(scene);
             stage.setTitle("Duke$$$");

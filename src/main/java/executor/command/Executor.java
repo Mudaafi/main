@@ -1,8 +1,6 @@
 package executor.command;
 
-import executor.task.TaskList;
-import ui.Ui;
-import ui.Wallet;
+import ui.gui.MainWindow;
 
 public class Executor {
 
@@ -14,15 +12,13 @@ public class Executor {
 
     /**
      * Parses the user input and executes the Command specified.
-     *
      * @param userInput User input from the CLI
      * @return True if the Command executed calls for an ExitRequest, false otherwise
      */
-    public static boolean runCommand(TaskList taskList, Wallet wallet, CommandType commandType, String userInput) {
+    public static boolean runCommand(MainWindow gui, CommandType commandType, String userInput) {
         Command c = createCommand(commandType, userInput);
-        Ui.dukeSays("Executing Command: " + c.commandType.toString());
-        c.execute(taskList);
-        c.execute(wallet);
+        gui.displayToast("Executing Command: " + c.commandType.toString());
+        c.execute(gui);
         return c.getExitRequest();
     }
 
