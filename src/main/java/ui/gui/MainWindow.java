@@ -33,7 +33,7 @@ public class MainWindow extends AnchorPane {
     private Boolean exitRequest;
     private StorageTask taskStore;
     private StorageWallet walletStore;
-    private TaskList taskList;
+    private TaskList taskList = new TaskList();
     private Wallet wallet = new Wallet();
     private ArrayList<String> userInputHistory;
     private Stage mainStage;
@@ -41,7 +41,7 @@ public class MainWindow extends AnchorPane {
     private CommandLineDisplay cliController;
     private HomeWindow homeController;
 
-    void initialize(Stage stage, String taskPath, String walletPath) {
+    public void initialize(Stage stage, String taskPath, String walletPath) {
         this.exitRequest = false;
         this.mainStage = stage;
         this.displayType = DisplayType.NONE;

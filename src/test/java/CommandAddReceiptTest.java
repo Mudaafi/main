@@ -1,22 +1,25 @@
+import com.sun.tools.javac.Main;
 import executor.command.CommandAddIncomeReceipt;
 import executor.command.CommandAddSpendingReceipt;
 import executor.command.CommandType;
 
 import org.junit.jupiter.api.Test;
 import ui.Wallet;
+import ui.gui.MainWindow;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CommandAddReceiptTest {
     @Test
     void execute() {
-        Wallet wallet = new Wallet();
+        MainWindow gui = new MainWindow();
+        Wallet wallet = gui.getWallet();
         String incomeInput = "In $3.00 /date 1990-01-24 /tags bank robbed crime";
         String spendingInput = "Out $15 /date 2019-12-31 /tags fine bank robbed";
         CommandAddIncomeReceipt testIncome = new CommandAddIncomeReceipt(incomeInput);
         CommandAddSpendingReceipt testSpending = new CommandAddSpendingReceipt(spendingInput);
-        testIncome.execute(wallet);
-        testSpending.execute(wallet);
+        testIncome.execute(gui);
+        testSpending.execute(gui);
 
         assertEquals(CommandType.IN, testIncome.getCommandType());
         assertEquals(3.00, testIncome.getCash());

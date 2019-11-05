@@ -54,8 +54,10 @@ public class TaskList {
     public String getPrintableTasksByIndex(int... indexes) {
         StringBuilder outputStr = new StringBuilder();
         for (int index : indexes) {
-            outputStr.append(String.valueOf(index + 1) + ". "
-                    + this.taskList.get(index).genTaskDesc());
+            outputStr.append(String.valueOf(index + 1))
+                    .append(". ")
+                    .append(this.taskList.get(index).genTaskDesc())
+                    .append("\n");
         }
         return outputStr.toString();
     }
@@ -134,13 +136,14 @@ public class TaskList {
         StringBuilder outputStr = new StringBuilder();
         for (int index = 0; index < this.taskList.size(); ++index) {
             try {
-                outputStr.append((index + 1)
-                                 + ". "
-                                 + this.taskList.get(index).genTaskDesc()
-                );
+                outputStr.append(index + 1)
+                        .append(". ")
+                        .append(this.taskList.get(index).genTaskDesc())
+                        .append("\n");
             } catch (Exception e) {
-                outputStr.append("Unable to print Task "
-                         + String.valueOf(index + 1));
+                outputStr.append("Unable to print Task ")
+                        .append(String.valueOf(index + 1))
+                        .append("\n");
             }
         }
         return outputStr.toString();

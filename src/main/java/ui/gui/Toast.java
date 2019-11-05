@@ -4,65 +4,56 @@ package ui.gui;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
+import javafx.scene.control.Control;
+import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.stage.WindowEvent;
 import javafx.util.Duration;
+
+import java.util.ArrayList;
 
 // @@author {Mudaafi}-reused
 // Solution below adapted from:
-// https://stackoverflow.com/questions/26792812/android-toast-equivalent-in-javafx
+// https://stackoverflow.com/questions/18669209/javafx-what-is-the-best-way-to-display-a-simple-message
 public final class Toast {
-    public static void makeText(Stage ownerStage, String toastMsg)
-    {
-        Stage toastStage=new Stage();
-        toastStage.initOwner(ownerStage);
-        toastStage.setResizable(false);
-        toastStage.initStyle(StageStyle.TRANSPARENT);
+    private static int TOAST_TIMEOUT = 2000;
+    private static ArrayList<String> toastedArr = new ArrayList<>();
 
-        Text text = new Text(toastMsg);
-        text.setFont(Font.font("Verdana", 40));
-        text.setFill(Color.RED);
+    private static Popup createPopup(final String message) {
+        final Popup popup = new Popup();
+        popup.setAutoFix(true);
+        Label label = new Label(message);
+        label.getStylesheets().add("/css/mainStyles.css");
+        label.getStyleClass().add("popup");
+        popup.getContent().add(label);
+        return popup;
+    }
 
-        StackPane root = new StackPane(text);
-        root.setStyle("-fx-background-radius: 20; -fx-background-color: rgba(0, 0, 0, 0.2); -fx-padding: 50px;");
-        root.setOpacity(0);
-
-        Scene scene = new Scene(root);
-        scene.setFill(Color.TRANSPARENT);
-        toastStage.setScene(scene);
-        toastStage.show();
-
-        Timeline fadeInTimeline = new Timeline();
-        int fadeInDelay = 500; //0.5 seconds
-        KeyFrame fadeInKey1 = new KeyFrame(Duration.millis(fadeInDelay),
-                new KeyValue(toastStage.getScene().getRoot().opacityProperty(), 1));
-        fadeInTimeline.getKeyFrames().add(fadeInKey1);
-        fadeInTimeline.setOnFinished((ae) ->
-        {
-            new Thread(() -> {
-                try
-                {
-                    int toastDelay = 3500; //3.5 seconds
-                    Thread.sleep(toastDelay);
-                }
-                catch (InterruptedException e)
-                {
-                    System.out.println(e.toString());
-                }
-                Timeline fadeOutTimeline = new Timeline();
-                int fadeOutDelay= 500; //0.5 seconds
-                KeyFrame fadeOutKey1 = new KeyFrame(Duration.millis(fadeOutDelay),
-                        new KeyValue (toastStage.getScene().getRoot().opacityProperty(), 0));
-                fadeOutTimeline.getKeyFrames().add(fadeOutKey1);
-                fadeOutTimeline.setOnFinished((aeb) -> toastStage.close());
-                fadeOutTimeline.play();
-            }).start();
+    public static void makeText(final Stage stage, final String message) {
+        Popup popup = createPopup(message);
+        popup.setOnShown(e -> {
+            popup.setX(stage.getX() + stage.getWidth() / 2 - popup.getWidth() / 2);
+            popup.setY(stage.getHeight() + (1.5 - toastedArr.size()) * popup.getHeight());
+            popup.setWidth(stage.getWidth());
         });
-        fadeInTimeline.play();
+        popup.show(stage);
+        toastedArr.add(popup.toString());
+
+        new Timeline(new KeyFrame(
+                Duration.millis(TOAST_TIMEOUT),
+                ae -> {
+                    popup.hide();
+                    toastedArr.remove(popup.toString());
+                }
+                )).play();
     }
 }

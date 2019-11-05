@@ -205,18 +205,18 @@ public class ReceiptTracker extends ArrayList<Receipt> {
         StringBuilder outputStr = new StringBuilder();
         for (int index = 0; index < this.size(); ++index) {
             try {
-                outputStr.append((index + 1)
-                        + ". "
-                        + this.get(index).getTags()
-                        + " "
-                        + this.get(index).getCashSpent()
-                        + " "
-                        + this.get(index).getDate()
-                );
+                outputStr.append(index + 1)
+                        .append(". ")
+                        .append(this.get(index).getTags())
+                        .append(" ")
+                        .append(this.get(index).getCashSpent())
+                        .append(" ")
+                        .append(this.get(index).getDate())
+                        .append("\n");
             } catch (Exception e) {
-                outputStr.append("Unable to print Receipt "
-                        + String.valueOf(index + 1)
-                );
+                outputStr.append("Unable to print Receipt ")
+                        .append(String.valueOf(index + 1))
+                        .append("\n");
             }
         }
         return outputStr.toString();

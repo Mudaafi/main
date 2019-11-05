@@ -83,11 +83,11 @@ public class CommandWeather extends Command {
             for (Map.Entry<String, LinkedHashMap<String, String>> weather : this.fullWeatherData.entrySet()) {
                 String weatherKey = weather.getKey();
                 if (Integer.parseInt(weatherKey) < size) {
-                    System.out.println("\n");
+                    gui.printToDisplay("\n");
                     for (Map.Entry<String, String> weatherEntry : weather.getValue().entrySet()) {
                         String field = weatherEntry.getKey();
                         String value = weatherEntry.getValue();
-                        System.out.println(field + " : " + value);
+                        gui.printToDisplay(field + " : " + value);
                     }
                 }
             }

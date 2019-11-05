@@ -3,6 +3,7 @@ import executor.command.CommandDisplayExpenditure;
 import org.junit.jupiter.api.Test;
 import ui.Receipt;
 import ui.Wallet;
+import ui.gui.MainWindow;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -36,8 +37,9 @@ public class CommandDisplayExpenditureTest {
 
         resetTextTracker();
         Command c = new CommandDisplayExpenditure("");
-        Wallet wallet = new Wallet();
-        c.execute(wallet);
+        MainWindow gui = new MainWindow();
+        Wallet wallet = gui.getWallet();
+        c.execute(gui);
         assertEquals("Total Expenditure: $0.00", outContent.toString().trim());
 
         resetTextTracker();
@@ -45,7 +47,7 @@ public class CommandDisplayExpenditureTest {
             Receipt receipt = new Receipt(x);
             wallet.addReceipt(receipt);
         }
-        c.execute(wallet);
+        c.execute(gui);
         assertEquals("Total Expenditure: $55.00", outContent.toString().trim());
 
         endTextTracker();

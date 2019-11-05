@@ -3,6 +3,7 @@ import executor.command.CommandDisplayBalance;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ui.Wallet;
+import ui.gui.MainWindow;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -36,14 +37,15 @@ public class CommandDisplayBalanceTest {
         assertEquals("", outContent.toString().trim());
 
         resetTextTracker();
-        Wallet wallet = new Wallet();
+        MainWindow gui = new MainWindow();
+        Wallet wallet = gui.getWallet();
         Command c = new CommandDisplayBalance("");
-        c.execute(wallet);
+        c.execute(gui);
         assertEquals("Your Balance: $0.00", outContent.toString().trim());
 
         resetTextTracker();
         wallet.setBalance(500.0);
-        c.execute(wallet);
+        c.execute(gui);
         assertEquals("Your Balance: $500.00", outContent.toString().trim());
 
         endTextTracker();
