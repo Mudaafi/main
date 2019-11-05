@@ -41,7 +41,7 @@ public class MainWindow extends AnchorPane {
     private CommandLineDisplay cliController;
     private HomeWindow homeController;
 
-    public void initialize(Stage stage, String taskPath, String walletPath) {
+    void initialize(Stage stage, String taskPath, String walletPath) {
         this.exitRequest = false;
         this.mainStage = stage;
         this.displayType = DisplayType.NONE;
@@ -89,15 +89,9 @@ public class MainWindow extends AnchorPane {
         this.headerBackground.setImage(headerBackgroundPic);
     }
 
-    private boolean containsXValue(String xValue, XYChart.Series<String, Double> series) {
-        for (XYChart.Data<String, Double> data : series.getData()) {
-            if (data.getXValue().equals(xValue)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
+    /**
+     * Set the Graphical User Interface to the Home Display.
+     */
     public void showHomeDisplay() {
         if (this.displayType == DisplayType.HOME) {
             return;
@@ -118,6 +112,9 @@ public class MainWindow extends AnchorPane {
         }
     }
 
+    /**
+     * Set the Graphical User Interface to the CLI Display.
+     */
     public void showCliDisplay() {
         if (this.displayType == DisplayType.CLI) {
             return;

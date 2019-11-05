@@ -1,4 +1,5 @@
 package executor.command;
+
 import ui.IncomeReceipt;
 import ui.gui.MainWindow;
 

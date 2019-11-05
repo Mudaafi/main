@@ -38,6 +38,11 @@ public final class Toast {
         return popup;
     }
 
+    /**
+     * Creates a popup message for the User on the Graphical User Interface.
+     * @param stage Stage the popup is to appear on
+     * @param message String to be printed to the User
+     */
     public static void makeText(final Stage stage, final String message) {
         Popup popup = createPopup(message);
         popup.setOnShown(e -> {
@@ -47,13 +52,9 @@ public final class Toast {
         });
         popup.show(stage);
         toastedArr.add(popup.toString());
-
-        new Timeline(new KeyFrame(
-                Duration.millis(TOAST_TIMEOUT),
-                ae -> {
-                    popup.hide();
-                    toastedArr.remove(popup.toString());
-                }
-                )).play();
+        new Timeline(new KeyFrame(Duration.millis(TOAST_TIMEOUT), ae -> {
+            popup.hide();
+            toastedArr.remove(popup.toString());
+        })).play();
     }
 }

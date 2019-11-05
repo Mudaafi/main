@@ -28,7 +28,8 @@ public class CommandDelete extends Command {
             );
             gui.getTaskList().deleteTaskByIndex(index);
         } catch (Exception e) {
-            gui.displayToast("Invalid 'delete' statement. Please indicate the index of the task you wish to mark delete.");
+            gui.displayToast("Invalid 'delete' statement. "
+                    + "Please indicate the index of the task you wish to mark delete.");
         }
     }
 }
