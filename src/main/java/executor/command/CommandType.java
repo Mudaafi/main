@@ -1,5 +1,7 @@
 package executor.command;
 
+import ui.gui.CommandLineDisplay;
+
 public enum CommandType {
     TASK(CommandNewTask.class),
     BYE(CommandBye.class),
@@ -28,7 +30,9 @@ public enum CommandType {
     CONVERT(CommandConvert.class),
     DATELIST(CommandDateList.class),
     ERROR(CommandError.class),
-    WEATHER(CommandWeather.class);
+    WEATHER(CommandWeather.class),
+    HOME(CommandHomeDisplay.class),
+    CLI(CommandCliDisplay.class);
 
     private final Class commandClass;
 

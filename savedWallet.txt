@@ -4,3 +4,8 @@ out $100.0 /date 2019-11-05 /tags
 out $500.0 /date 2019-11-05 /tags 
 out $100.0 /date 2019-02-01 /tags food
 out $100.0 /date 2019-11-05 /tags 
+out $100.0 /date 2019-11-05 /tags 
+in $100.0 /date 2019-11-05 /tags 
+out $100.0 /date 2019-11-05 /tags 
+in $100.0 /date 2019-11-05 /tags 
+in $100.0 /date 2019-11-05 /tags 

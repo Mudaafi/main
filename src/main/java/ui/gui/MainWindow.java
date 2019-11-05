@@ -63,14 +63,8 @@ public class MainWindow extends AnchorPane {
         this.userInputHistory.add(input);
         this.exitRequest = Interpreter.interpret(this, input);
         if (this.displayType == DisplayType.HOME) {
-            if (input.equals("cli")) {
-                showCliDisplay();
-            } else {
-                this.homeController.updateBalanceChart(this.wallet);
-                this.homeController.displayTasks(this.taskList);
-            }
-        } else if (this.displayType == DisplayType.CLI && input.equals("home")) {
-            this.showHomeDisplay();
+            this.homeController.updateBalanceChart(this.wallet);
+            this.homeController.displayTasks(this.taskList);
         }
         this.userInput.clear();
         if (this.exitRequest) {
