@@ -42,7 +42,7 @@ public class CommandConvert extends Command {
     public void execute(MainWindow gui) {
         this.gui = gui;
         Double convertedAmount = this.convertCurrency(this.getFrom(), this.getTo(), this.getAmount());
-        gui.displayToast(this.result(convertedAmount));
+        gui.dukeSays(this.result(convertedAmount));
     }
 
     /**
@@ -56,7 +56,6 @@ public class CommandConvert extends Command {
         try {
             return Double.parseDouble(amountStr);
         } catch (Exception e) {
-            gui.dukeSays("Please enter a valid amount");
             return null;
         }
     }
