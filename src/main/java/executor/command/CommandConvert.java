@@ -34,7 +34,8 @@ public class CommandConvert extends Command {
         this.use = ""; // whether to use "from code" or "to code" for fetching exchange rate from json
         this.to = getCurrencyConvertTo(userInput);
         this.description = "Command that converts the user input cash amount from"
-                + " one currency to another and prints it on the User Interface.";
+                + " one currency to another and prints it on the User Interface.\n"
+                + "FORMAT : convert <amount> /from <Base currency ISO e.g USD > /to <Required Currency ISO e.g SGD>";
     }
 
     @Override
@@ -55,7 +56,8 @@ public class CommandConvert extends Command {
         try {
             return Double.parseDouble(amountStr);
         } catch (Exception e) {
-            return 0.0;
+            gui.dukeSays("Please enter a valid amount");
+            return null;
         }
     }
 
@@ -66,7 +68,10 @@ public class CommandConvert extends Command {
      */
     private String getCurrencyCovertFrom(String userInput) {
         String fromStr = Parser.parseForFlag("from", userInput);
-        return fromStr;
+        if (fromStr != null) {
+            return fromStr.toUpperCase();
+        }
+        return null;
     }
 
     /**
@@ -76,7 +81,10 @@ public class CommandConvert extends Command {
      */
     private String getCurrencyConvertTo(String userInput) {
         String toStr = Parser.parseForFlag("to", userInput);
-        return toStr;
+        if (toStr != null) {
+            return toStr.toUpperCase();
+        }
+        return null;
     }
 
     /**
@@ -97,7 +105,11 @@ public class CommandConvert extends Command {
             }
             return completeJson;
         } catch (Exception ex) {
-            gui.displayToast("Please enter a valid country code \n");
+            gui.dukeSays("Exchange rate data is unavailable \n"
+                    + "1. Please ensure you have active internet access. \n"
+                    + "2. Also please follow the correct format for currency conversion"
+                    + " available under CONVERT if you type help on the CLI. \n"
+                    + "3. Please ensure that you enter proper ISO 4217 Country codes. \n");
             return null;
         }
     }
@@ -116,7 +128,6 @@ public class CommandConvert extends Command {
             double exRate = exchangeRate.doubleValue();
             return exRate;
         } catch (Exception e) {
-            gui.displayToast("Please enter a valid country code \n");
             return null;
         }
     }
@@ -155,7 +166,6 @@ public class CommandConvert extends Command {
             }
             return url;
         } catch (Exception e) {
-            gui.displayToast("Please enter a valid country code \n");
             return null;
         }
     }
@@ -182,7 +192,6 @@ public class CommandConvert extends Command {
                 return convertedAmount;
             }
         } catch (Exception e) {
-            gui.displayToast("Please enter a valid country code \n");
             return null;
         }
     }
@@ -206,7 +215,6 @@ public class CommandConvert extends Command {
             setExchangeRate(originalToOutputExRate);
             return convertedAmount;
         } catch (Exception e) {
-            gui.displayToast("Please enter a valid country code \n");
             return null;
         }
     }
@@ -231,8 +239,12 @@ public class CommandConvert extends Command {
                 }
             }
         } catch (Exception e) {
-            gui.displayToast("Please enter in the following format : "
-                    + "convert 2000 /from USD /to EUR");
+            String errorMessage = "DUKE$$$ could not understand the input. \n"
+                    + "Please follow the following formatting to convert : \n"
+                    + "For example : convert <amount> /from USD /to SGD \n"
+                    + "\n";
+            gui.dukeSays(errorMessage);
+            return null;
         }
         return null;
     }
@@ -243,12 +255,17 @@ public class CommandConvert extends Command {
      * @return string of output is returned
      */
     private String result(Double convertedAmount) {
-        convertedAmount = roundByDecimalPlace(convertedAmount, 2);
-        return "DUKE$$$ has converted " + this.from
-                + " " + roundByDecimalPlace(this.amount, 2) + " "
-                + "to" + " "
-                + this.to + " " + convertedAmount + "\n"
-                + rateUsed();
+
+        if (convertedAmount != null) {
+            convertedAmount = roundByDecimalPlace(convertedAmount, 2);
+            return "DUKE$$$ has converted " + this.from
+                    + " " + roundByDecimalPlace(this.amount, 2) + " "
+                    + "to" + " "
+                    + this.to + " " + convertedAmount + "\n"
+                    + rateUsed();
+        } else {
+            return "Please try again :) \n";
+        }
     }
 
     /**
@@ -288,7 +305,7 @@ public class CommandConvert extends Command {
         return amount;
     }
 
-    public Double getExchangeRate() {
+    private Double getExchangeRate() {
         return exchangeRate;
     }
 
