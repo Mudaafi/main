@@ -4,6 +4,7 @@ import executor.command.CommandAddSpendingReceipt;
 import executor.command.CommandType;
 
 import org.junit.jupiter.api.Test;
+import storage.StorageManager;
 import ui.Wallet;
 import ui.gui.MainWindow;
 
@@ -12,14 +13,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class CommandAddReceiptTest {
     @Test
     void execute() {
-        MainWindow gui = new MainWindow();
-        Wallet wallet = gui.getWallet();
+        StorageManager storageManager = new StorageManager();
         String incomeInput = "In $3.00 /date 1990-01-24 /tags bank robbed crime";
         String spendingInput = "Out $15 /date 2019-12-31 /tags fine bank robbed";
         CommandAddIncomeReceipt testIncome = new CommandAddIncomeReceipt(incomeInput);
         CommandAddSpendingReceipt testSpending = new CommandAddSpendingReceipt(spendingInput);
-        testIncome.execute(gui);
-        testSpending.execute(gui);
+        testIncome.execute(storageManager);
+        testSpending.execute(storageManager);
 
         assertEquals(CommandType.IN, testIncome.getCommandType());
         assertEquals(3.00, testIncome.getCash());

@@ -1,57 +1,56 @@
 package executor.command;
 
-import executor.task.TaskList;
+import duke.exception.DukeException;
 import interpreter.Parser;
-import ui.gui.MainWindow;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import storage.StorageManager;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class CommandSchedule extends Command {
-    protected String userInput;
+    private String userInput;
 
     /**
      * Constructor for CommandSchedule subCommand Class.
-     * @param userInput The user input from the CLI
+     * @param userInput String the user input from the CLI
      */
     public CommandSchedule(String userInput) {
+        super();
         this.userInput = userInput;
         this.commandType = CommandType.VIEWSCHEDULE;
-        this.description = "Prints the schedule for the input date";
+        this.description = "Prints the schedule for the input date \n"
+                + "FORMAT :  ";
     }
 
     @Override
-    public void execute(MainWindow gui) {
+    public void execute(StorageManager storageManager) {
         String dateInput = Parser.removeStr(this.commandType.toString(), this.userInput);
-        gui.printToDisplay("Here is your schedule for the following date '"
-                + dateInput
-                + "'."
-        );
+        String outputStr;
         try {
-            gui.printToDisplay(getPrintableSchedule(dateInput, taskList));
-        } catch (Exception e) {
-            gui.displayToast("Read invalid input");
+            outputStr = printSchedule(dateInput, storageManager);
+        } catch (DukeException e) {
+            this.infoCapsule.setCodeError();
+            this.infoCapsule.setOutputStr(e.getMessage());
+            return;
         }
+        this.infoCapsule.setCodeCli();
+        this.infoCapsule.setOutputStr(outputStr);
     }
 
-    private String getPrintableSchedule(String dateInput, TaskList taskList) throws ParseException {
-        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
-        Date userDate = format.parse(dateInput);
-        userDate.setTime(0);
+    private String printSchedule(String dateInput, StorageManager storageManager) throws DukeException {
         StringBuilder outputStr = new StringBuilder();
-        for (int index = 0; index < taskList.getSize(); ++index) {
-            try {
-                Date taskDate = taskList.getList().get(index).getDatetime();//creates of copy of datetime in the task
-                if (taskDate != null) {
-                    taskDate.setTime(0);//this sets the time to zero
-                    if (taskDate.equals(userDate)) {
-                        outputStr.append(taskList.getPrintableTasksByIndex(index));
-                    }
-                }
-            } catch (Exception e) {
-                outputStr.append("Invalid inputs received");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yy");
+        try {
+            LocalDate userDate = LocalDate.parse(dateInput, formatter);
+            outputStr.append("Here is your schedule for the following date: \n")
+                    .append(dateInput)
+                    .append(":\n");
+            for (int index = 0; index < storageManager.getTaskListSize(); ++index) {
+                outputStr.append(storageManager.getTasksByDate(userDate).getPrintableTasks()).append("\n");
             }
+        } catch (DukeException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new DukeException("Please kindly type help to see the format for using Command Schedule");
         }
         return outputStr.toString();
     }

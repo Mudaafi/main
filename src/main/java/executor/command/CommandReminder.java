@@ -1,40 +1,38 @@
 package executor.command;
 
-import executor.task.Task;
-import ui.gui.MainWindow;
-
-import java.util.Calendar;
-import java.util.Date;
+import duke.exception.DukeException;
+import storage.StorageManager;
+import java.time.LocalDate;
 
 public class CommandReminder extends Command {
-    protected Date currentDate = Calendar.getInstance().getTime();
+    private LocalDate currentDate;
 
     /**
      * Constructor for CommandReminder subCommand Class.
      * @param userInput The user input from the CLI
      */
     public CommandReminder(String userInput) {
+        super();
         this.userInput = userInput;
-        this.currentDate.setTime(0);
         this.commandType = CommandType.REMINDER;
-        this.description = "Loops through list and checks if current date matches date linked with task and prints it";
+        this.currentDate = LocalDate.now();
+        this.description = "Loops through list and checks if current "
+                + "date matches date linked with task and prints it \n"
+                + "FORMAT :  reminder ";
+
     }
 
     @Override
-    public void execute(MainWindow gui) {
+    public void execute(StorageManager storageManager) {
+        String outputStr;
         try {
-            for (Task task : taskList.getList()) {
-                Date dateCopy = task.getDatetime();
-                if (dateCopy != null) {
-                    dateCopy.setTime(0);
-                    if (dateCopy.equals(this.currentDate)) {
-                        gui.displayToast(task.genTaskDesc());
-                        gui.printSeparator();
-                    }
-                }
-            }
-        } catch (Exception e) {
-            System.out.println("sorry");
+            outputStr = storageManager.getTasksByDate(LocalDate.now()).getPrintableTasks();
+        } catch (DukeException e) {
+            this.infoCapsule.setCodeError();
+            this.infoCapsule.setOutputStr(e.getMessage());
+            return;
         }
+        this.infoCapsule.setCodeCli();
+        this.infoCapsule.setOutputStr(outputStr);
     }
 }

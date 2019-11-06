@@ -1,33 +1,37 @@
 package executor.command;
 
+import duke.exception.DukeException;
 import interpreter.Parser;
-import ui.ReceiptTracker;
-import ui.gui.MainWindow;
-
+import storage.StorageManager;
 
 public class CommandDateList extends Command {
     private String date;
 
-    //Constructor
     /**
      * Constructor for CommandListMonYear subCommand Class.
      * @param userInput String is the user input from the CLI
      */
     public CommandDateList(String userInput) {
+        super();
         this.userInput = userInput;
-        this.description = "Lists receipts based on date input. Format: datelist <date>";
+        this.description = "Lists based on date. \n"
+                + "Format: listmy <date>";
         this.commandType = CommandType.DATELIST;
         this.date = Parser.parseForPrimaryInput(this.commandType, userInput);
     }
 
     @Override
-    public void execute(MainWindow gui) {
-        ReceiptTracker dateReceipts = gui.getWallet().getReceipts().findReceiptsByDate(this.date);
-        gui.dukeSays("You have the following receipts for" + " " + date);
-        gui.printSeparator();
-        gui.printToDisplay(dateReceipts.getPrintableReceipts());
-        gui.printSeparator();
+    public void execute(StorageManager storageManager) {
+        String outputStr = "You have the following receipts for" + " " + date + "\n";
+        try {
+            outputStr += storageManager.getReceiptsByDate(this.date).getPrintableReceipts();
+        } catch (DukeException e) {
+            this.infoCapsule.setCodeError();
+            this.infoCapsule.setOutputStr(e.getMessage());
+            return;
+        }
+        this.infoCapsule.setCodeCli();
+        this.infoCapsule.setOutputStr(outputStr);
     }
-
 }
 

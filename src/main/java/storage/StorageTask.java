@@ -1,5 +1,6 @@
 package storage;
 
+import duke.exception.DukeException;
 import executor.task.Task;
 import executor.task.TaskList;
 import interpreter.Parser;
@@ -21,27 +22,26 @@ public class StorageTask {
 
     /**
      * Method to save the current list of tasks.
-     * @param taskList TaskList class
+     * @param taskList TaskList that houses all the Tasks to be saved
      */
-    public void saveData(TaskList taskList) {
+    public void saveData(TaskList taskList) throws DukeException {
         try {
             FileWriter writer = new FileWriter(this.filePath);
-            for (Task task : taskList.getList()) {
+            for (Task task : taskList) {
                 String strSave = Parser.encodeTask(task);
                 writer.write(strSave);
             }
             writer.close();
         } catch (Exception e) {
-            System.out.println(e);
+            throw new DukeException("Unable to load saved Task Data.\n");
         }
     }
 
     /**
      * Method to load previously saved list of tasks.
-     * @return TaskList class
+     * @param taskList TaskList that will house all the Tasks
      */
-    public TaskList loadData() {
-        TaskList taskList = new TaskList();
+    public void loadData(TaskList taskList) throws DukeException {
         try {
             File file = new File(this.filePath);
             Scanner scanner = new Scanner(file);
@@ -51,17 +51,12 @@ public class StorageTask {
                 if (loadedInput.equals("")) {
                     break;
                 }
-                try {
-                    newTask = loadTaskFromStorageString(loadedInput);
-                    taskList.addTask(newTask);
-                } catch (Exception e) {
-                    System.out.println(e);
-                }
+                newTask = loadTaskFromStorageString(loadedInput);
+                taskList.addTask(newTask);
             }
         } catch (Exception e) {
-            System.out.println("No Previously saved Data.");
+            throw new DukeException("No Previously Saved Tasks.\n");
         }
-        return taskList;
     }
 
     /**
@@ -76,10 +71,18 @@ public class StorageTask {
         String[] taskStrings = Parser.parseStoredTask(loadedInput);
         for (String taskString : taskStrings) {
             if (newTask == null) {
-                newTask = TaskList.createTaskFromString(taskString);
+                try {
+                    newTask = TaskList.createTaskFromString(taskString);
+                } catch (DukeException e) {
+                    // Task cannot be created. Continue
+                }
             } else {
-                queuedTask = TaskList.createTaskFromString(taskString);
-                queuedTasks.getList().add(queuedTask);
+                try {
+                    queuedTask = TaskList.createTaskFromString(taskString);
+                } catch (DukeException e) {
+                // Task cannot be created. Continue
+                }
+                queuedTasks.add(queuedTask);
             }
         }
         if (queuedTask != null) {

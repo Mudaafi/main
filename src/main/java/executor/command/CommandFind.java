@@ -1,8 +1,8 @@
 package executor.command;
 
-import executor.task.TaskList;
+import duke.exception.DukeException;
 import interpreter.Parser;
-import ui.gui.MainWindow;
+import storage.StorageManager;
 
 public class CommandFind extends Command {
     protected String userInput;
@@ -12,44 +12,26 @@ public class CommandFind extends Command {
      * @param userInput The User Input to be translated into a Command
      */
     public CommandFind(String userInput) {
+        super();
         this.userInput = userInput;
-        this.description = "Parses input and loops through list of entries and checks if input matches any of them";
+        this.description = "Parses input and loops through list of entries and checks if input matches any of them \n"
+                + "FORMAT :  ";
         this.commandType = CommandType.FIND;
     }
 
     @Override
-    public void execute(MainWindow gui) {
+    public void execute(StorageManager storageManager) {
+        StringBuilder outputStr = new StringBuilder();
         try {
             String queryInput = Parser.removeStr("find", this.userInput);
             queryInput = queryInput.toLowerCase();
-            gui.printToDisplay("Here are the Tasks matching your query '"
-                    + queryInput
-                    + "'."
-            );
-            gui.printToDisplay(getPrintableTasksByName(queryInput, gui.getTaskList()));
-        } catch (Exception e) {
-            gui.displayToast("No such task found.");
+            outputStr.append("Duke: Here are the Tasks matching your query '")
+                    .append(queryInput)
+                    .append("'.\n")
+                    .append(storageManager.getTasksByName(queryInput).getPrintableTasks());
+        } catch (DukeException e) {
+            this.infoCapsule.setCodeError();
+            this.infoCapsule.setOutputStr(e.getMessage());
         }
-        gui.printSeparator();
-    }
-
-    /**
-     * Finds and prints each task that contains the string.
-     * @param name     The substring to be found
-     * @param taskList The TaskList containing the Tasks.
-     * @return String representing the output
-     */
-    private String getPrintableTasksByName(String name, TaskList taskList) {
-        StringBuilder outputStr = new StringBuilder();
-        for (int index = 0; index < taskList.getSize(); ++index) {
-            try {
-                if (taskList.getList().get(index).getTaskName().toLowerCase().contains(name)) {
-                    outputStr.append(taskList.getPrintableTasksByIndex(index));
-                }
-            } catch (Exception e) {
-                outputStr.append("Read invalid taskName");
-            }
-        }
-        return outputStr.toString();
     }
 }

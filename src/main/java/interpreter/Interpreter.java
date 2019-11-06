@@ -2,21 +2,26 @@ package interpreter;
 
 import executor.command.CommandType;
 import executor.command.Executor;
-import executor.task.TaskList;
-import ui.Wallet;
-import ui.gui.MainWindow;
+import utils.InfoCapsule;
 
 public class Interpreter {
+    private Executor executorLayer;
+
+    public Interpreter(String taskPath, String walletPath) {
+        this.executorLayer = new Executor(taskPath, walletPath);
+    }
 
     /**
      * Interprets the userInput relative to the TaskList provided and executes the Command.
-     * @param gui The caller's Graphical User Interface
      * @param userInput The userInput taken from the User Interface
-     * @return True if the Command executed calls for an ExitRequest, false otherwise
+     * @return InfoCapsule containing the execution results of the Command
      */
-    public static boolean interpret(MainWindow gui, String userInput) {
+    public InfoCapsule interpret(String userInput) {
         CommandType commandType = Parser.parseForCommandType(userInput);
-        boolean exitRequest = Executor.runCommand(gui, commandType, userInput);
-        return exitRequest;
+        return this.executorLayer.runCommand(commandType, userInput);
+    }
+
+    public InfoCapsule requestSave() {
+        return this.executorLayer.saveAllData();
     }
 }

@@ -1,3 +1,4 @@
+import duke.exception.DukeException;
 import executor.task.Task;
 import executor.task.TaskList;
 import executor.task.TaskType;
@@ -6,6 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -15,10 +17,15 @@ public class StorageTaskTest {
     @Test
     void loadData() {
         StorageTask storagetask = new StorageTask("testDataLoad.txt");
-        TaskList taskListResult = storagetask.loadData();
+        TaskList taskListResult = new TaskList();
+        try {
+            storagetask.loadData(taskListResult);
+        } catch (DukeException e) {
+            System.out.println(e.getMessage());
+        }
         final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HHmm");
         //TODO yoda things/ tmrw at last@|@false
-        Task taskResult = taskListResult.getList().get(0);
+        Task taskResult = taskListResult.get(0);
         assertEquals(TaskType.TODO, taskResult.getTaskType(),
                 "Loaded wrong taskType");
         assertEquals("yoda things", taskResult.getTaskName(),
@@ -31,7 +38,7 @@ public class StorageTaskTest {
                 "Loaded wrong isDone");
 
         //EVENT something/by somewhen@|@true
-        taskResult = taskListResult.getList().get(1);
+        taskResult = taskListResult.get(1);
         assertEquals(TaskType.EVENT, taskResult.getTaskType(),
                 "Loaded wrong taskType");
         assertEquals("something", taskResult.getTaskName(),
@@ -43,20 +50,21 @@ public class StorageTaskTest {
         assertEquals(true, taskResult.getIsDone(),
                 "Loaded wrong isDone");
 
-        //DEADLINE this/by 19/09/2019 1015@|@false
-        taskResult = taskListResult.getList().get(2);
+        //DEADLINE this/by 19/09/19 1015@|@false
+        taskResult = taskListResult.get(2);
         assertEquals(TaskType.DEADLINE, taskResult.getTaskType(),
                 "Loaded wrong taskType");
         assertEquals("this", taskResult.getTaskName(),
                 "Loaded wrong taskName");
         assertEquals("by", taskResult.getDetailDesc(),
                 "Loaded wrong detailDesc");
-        assertEquals("19/09/2019 1015", taskResult.getTaskDetails(),
+        assertEquals("19/09/19 1015", taskResult.getTaskDetails(),
                 "Loaded wrong taskDetails");
         assertEquals(false, taskResult.getIsDone(),
                 "Loaded wrong isDone");
-        assertEquals("19/09/2019 1015", dateFormat.format(taskResult.getDatetime()),
+        assertEquals("19/09/19", taskResult.getDate().format(DateTimeFormatter.ofPattern("dd/MM/yy")),
                 "Loaded wrong taskDetails");
+        assertEquals("1015", taskResult.getTime().format(DateTimeFormatter.ofPattern("HHmm")));
 
     }
 
@@ -66,9 +74,17 @@ public class StorageTaskTest {
         // Follow the Storage Format when inputting new test cases
         StorageTask storageExpected = new StorageTask("testDataLoad.txt");
         StorageTask storageSaved = new StorageTask("testDataSave.txt");
-        TaskList taskList = storageExpected.loadData();
-
-        storageSaved.saveData(taskList);
+        TaskList taskList = new TaskList();
+        try {
+            storageExpected.loadData(taskList);
+        } catch (DukeException e) {
+            System.out.println(e.getMessage());
+        }
+        try {
+            storageSaved.saveData(taskList);
+        } catch (DukeException e) {
+            System.out.println(e.getMessage());
+        }
         File fileExpected = new File("testDataLoad.txt");
         File fileSaved = new File("testDataSave.txt");
         try {
@@ -78,7 +94,7 @@ public class StorageTaskTest {
                 assertEquals(scannerExpected.nextLine(), scannerSaved.nextLine());
             }
         } catch (Exception e) {
-            System.out.println(e);
+            System.out.println(e.toString());
         }
     }
 }

@@ -1,7 +1,8 @@
 package executor.command;
 
+import duke.exception.DukeException;
 import interpreter.Parser;
-import ui.gui.MainWindow;
+import storage.StorageManager;
 
 import java.text.DecimalFormat;
 
@@ -14,26 +15,34 @@ public class CommandUpdateBalance extends Command {
      * @param userInput The user Input from the CLI
      */
     public CommandUpdateBalance(String userInput) {
+        super();
         this.userInput = userInput;
         this.commandType = CommandType.SETBALANCE;
-        this.newBalance = extractAmount();
-        this.description = "Updates current balance to new balance in the wallet";
+        this.description = "Updates current balance to new balance in the wallet \n"
+                + "FORMAT :  ";
     }
 
     @Override
-    public void execute(MainWindow gui) {
-        gui.getWallet().setBalance(this.newBalance);
+    public void execute(StorageManager storageManager) {
+        try {
+            this.newBalance = extractAmount();
+        } catch (DukeException e) {
+            this.infoCapsule.setCodeError();
+            this.infoCapsule.setOutputStr(e.getMessage());
+        }
         DecimalFormat decimalFormat = new DecimalFormat("#0.00");
-        gui.displayToast("Balance updated to: $" + decimalFormat.format(this.newBalance));
+        storageManager.setWalletBalance(this.newBalance);
+        this.infoCapsule.setCodeToast();
+        this.infoCapsule.setOutputStr("Balance updated to: $" + decimalFormat.format(this.newBalance) + "\n");
     }
 
-    private Double extractAmount() {
+    private Double extractAmount() throws DukeException {
         String incomeStr = Parser.parseForPrimaryInput(this.commandType, this.userInput);
         incomeStr = incomeStr.trim().replace("$", "");
         try {
             return Double.parseDouble(incomeStr);
         } catch (Exception e) {
-            return 0.0;
+            throw new DukeException("Invalid amount entered.\n");
         }
     }
 }
