@@ -4,12 +4,18 @@ import executor.task.TaskList;
 import storage.StorageManager;
 import utils.InfoCapsule;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public abstract class Command {
     protected InfoCapsule infoCapsule;
+    private static List<String> executedCommands = new ArrayList<>();
+    protected Boolean exitRequest = false;
     protected String userInput = null;
     protected CommandType commandType;
     protected String description = "NO DESCRIPTION";
     protected TaskList taskList;
+
 
     // Constructor
 
@@ -44,7 +50,7 @@ public abstract class Command {
         return commandType;
     }
 
-    public void setTaskList(TaskList taskList) {
-        this.taskList = taskList;
+    public static List<String> getExecutedCommands() {
+        return executedCommands;
     }
 }
