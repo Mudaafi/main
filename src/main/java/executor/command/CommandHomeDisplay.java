@@ -1,5 +1,7 @@
 package executor.command;
 
+import storage.StorageManager;
+import ui.UiCode;
 import ui.gui.MainWindow;
 
 public class CommandHomeDisplay extends Command {
@@ -15,11 +17,7 @@ public class CommandHomeDisplay extends Command {
     }
 
     @Override
-    public void execute(MainWindow gui) {
-        try {
-            gui.showHomeDisplay();
-        } catch (Exception e) {
-            gui.displayToast("Unable to show Home Display");
-        }
+    public void execute(StorageManager storageManager) {
+        this.infoCapsule.setUiCode(UiCode.DISPLAY_HOME);
     }
 }

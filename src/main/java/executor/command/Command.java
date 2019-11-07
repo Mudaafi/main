@@ -2,6 +2,7 @@ package executor.command;
 
 import executor.task.TaskList;
 import storage.StorageManager;
+import ui.UiCode;
 import utils.InfoCapsule;
 
 import java.util.ArrayList;
@@ -24,7 +25,7 @@ public abstract class Command {
      */
     public Command() {
         this.infoCapsule = new InfoCapsule();
-        infoCapsule.setCodeError();
+        infoCapsule.setUiCode(UiCode.ERROR);
         infoCapsule.setOutputStr("Command was not executed.\n");
     }
 

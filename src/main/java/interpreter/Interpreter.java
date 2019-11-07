@@ -1,7 +1,8 @@
 package interpreter;
 
+import utils.AccessType;
 import executor.command.CommandType;
-import executor.command.Executor;
+import executor.Executor;
 import utils.InfoCapsule;
 
 public class Interpreter {
@@ -23,5 +24,9 @@ public class Interpreter {
 
     public InfoCapsule requestSave() {
         return this.executorLayer.saveAllData();
+    }
+
+    public InfoCapsule request(AccessType accessType, String argsStr) {
+        return this.executorLayer.access(accessType, argsStr);
     }
 }

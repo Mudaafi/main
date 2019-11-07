@@ -18,4 +18,8 @@ public class Duke {
         gui = new MainGui();
         gui.initialize(args);
     }
+
+    private static void initializeUi() {
+
+    }
 }

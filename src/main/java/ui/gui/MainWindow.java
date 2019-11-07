@@ -1,5 +1,6 @@
 package ui.gui;
 
+import duke.exception.DukeException;
 import executor.task.TaskList;
 import interpreter.Interpreter;
 import javafx.application.Platform;
@@ -14,7 +15,10 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import storage.StorageTask;
 import storage.StorageWallet;
+import ui.UiCode;
 import ui.Wallet;
+import utils.InfoCapsule;
+
 import java.util.ArrayList;
 
 public class MainWindow extends AnchorPane {
@@ -31,25 +35,19 @@ public class MainWindow extends AnchorPane {
     private TextField userInput;
 
     private Boolean exitRequest;
-    private StorageTask taskStore;
-    private StorageWallet walletStore;
-    private TaskList taskList = new TaskList();
-    private Wallet wallet = new Wallet();
     private ArrayList<String> userInputHistory;
     private Stage mainStage;
     private DisplayType displayType;
     private CommandLineDisplay cliController;
     private HomeWindow homeController;
+    private Interpreter interpreterLayer;
 
     void initialize(Stage stage, String taskPath, String walletPath) {
         this.exitRequest = false;
         this.mainStage = stage;
+        this.interpreterLayer = new Interpreter(taskPath, walletPath);
         this.displayType = DisplayType.NONE;
         this.userInputHistory = new ArrayList<>();
-        this.taskStore = new StorageTask(taskPath);
-        this.walletStore = new StorageWallet(walletPath);
-        this.taskList = this.taskStore.loadData();
-        this.walletStore.loadData(this);
 
         this.fetchStoredImages();
         this.showHomeDisplay();
@@ -61,10 +59,10 @@ public class MainWindow extends AnchorPane {
     private void handleUserInput() {
         String input = this.userInput.getText();
         this.userInputHistory.add(input);
-        this.exitRequest = Interpreter.interpret(this, input);
+        InfoCapsule infoCapsule = this.interpreterLayer.interpret(input);
+        this.updateGui(infoCapsule);
         if (this.displayType == DisplayType.HOME) {
-            this.homeController.updateBalanceChart(this.wallet);
-            this.homeController.displayTasks(this.taskList);
+            updateHomeDisplay();
         }
         this.userInput.clear();
         if (this.exitRequest) {
@@ -72,6 +70,82 @@ public class MainWindow extends AnchorPane {
         }
     }
 
+    /**
+     * Set the Graphical User Interface to the Home Display.
+     */
+    private void showHomeDisplay() {
+        if (this.displayType == DisplayType.HOME) {
+            return;
+        }
+        try {
+            FXMLLoader loaderHomeDisplay = new FXMLLoader(MainGui.class
+                    .getResource("/view/HomeWindow.fxml"));
+            AnchorPane homeDisplayRoot = loaderHomeDisplay.load();
+            this.homeController = loaderHomeDisplay.<HomeWindow>getController();
+            this.homeController.initialize(this.userInputHistory, this.interpreterLayer);
+            this.homeController.displayBalanceChart();
+            this.homeController.displayBreakdownChart();
+            this.homeController.displayTasks();
+            this.contentPane.getChildren().add(homeDisplayRoot);
+            this.displayType = DisplayType.HOME;
+        } catch (DukeException e) {
+            this.displayToast(e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (this.contentPane.getChildren().size() > 1) {
+            this.contentPane.getChildren().remove(0);
+        }
+    }
+
+    private void updateHomeDisplay() {
+        try {
+            this.homeController.updateBalanceChart();
+        } catch (DukeException e) {
+            this.displayToast(e.getMessage());
+        }
+        try {
+            this.homeController.displayTasks();
+        } catch (DukeException e) {
+            this.displayToast(e.getMessage());
+        }
+    }
+
+    private void updateGui(InfoCapsule infoCapsule) {
+        UiCode uiCode = infoCapsule.getUiCode();
+        try {
+            switch (uiCode) {
+            case CLI:
+                this.showCliDisplay();
+                this.printToDisplay(infoCapsule.getOutputStr());
+                break;
+            case TOAST:
+                this.displayToast(infoCapsule.getOutputStr());
+                break;
+            case ERROR:
+                infoCapsule.throwError();
+                break;
+            case EXIT:
+                this.exitRequest = true;
+                break;
+            case DISPLAY_HOME:
+                this.showHomeDisplay();
+                break;
+            case DISPLAY_CLI:
+                this.showCliDisplay();
+                break;
+            case UPDATE:
+                break;
+            default:
+            }
+        } catch (DukeException e) {
+            this.displayToast(e.getMessage());
+        }
+    }
+
+    void saveAllData() {
+        this.interpreterLayer.requestSave();
+    }
 
 
     /**
@@ -84,32 +158,9 @@ public class MainWindow extends AnchorPane {
     }
 
     /**
-     * Set the Graphical User Interface to the Home Display.
-     */
-    public void showHomeDisplay() {
-        if (this.displayType == DisplayType.HOME) {
-            return;
-        }
-        try {
-            FXMLLoader loaderHomeDisplay = new FXMLLoader(MainGui.class
-                    .getResource("/view/HomeWindow.fxml"));
-            AnchorPane homeDisplayRoot = loaderHomeDisplay.load();
-            this.homeController = loaderHomeDisplay.<HomeWindow>getController();
-            this.homeController.initialize(this.userInputHistory, this.taskList, this.wallet);
-            this.contentPane.getChildren().add(homeDisplayRoot);
-            this.displayType = DisplayType.HOME;
-        } catch (Exception e) {
-            System.out.println(e.toString());
-        }
-        if (this.contentPane.getChildren().size() > 1) {
-            this.contentPane.getChildren().remove(0);
-        }
-    }
-
-    /**
      * Set the Graphical User Interface to the CLI Display.
      */
-    public void showCliDisplay() {
+    private void showCliDisplay() {
         if (this.displayType == DisplayType.CLI) {
             return;
         }
@@ -129,35 +180,24 @@ public class MainWindow extends AnchorPane {
         }
     }
 
-    public void displayToast(String string) {
+    private void displayToast(String string) {
         Toast.makeText(this.mainStage, string);
     }
 
-    public Wallet getWallet() {
-        return this.wallet;
-    }
-
-    public TaskList getTaskList() {
-        return this.taskList;
-    }
-
-    public void dukeSays(String string) {
+    private void dukeSays(String string) {
         this.showCliDisplay();
         this.cliController.dukeSays(string);
     }
 
-    public void printToDisplay(String string) {
+    private void printToDisplay(String string) {
         this.showCliDisplay();
         this.cliController.printToDisplay(string);
+        this.printSeparator();
     }
 
-    public void printSeparator() {
+    private void printSeparator() {
         this.showCliDisplay();
         this.cliController.printSeparator();
     }
 
-    public void saveAllData() {
-        this.taskStore.saveData(this.taskList);
-        this.walletStore.saveData(this);
-    }
 }

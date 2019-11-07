@@ -1,6 +1,7 @@
 package executor.command;
 
-import ui.gui.MainWindow;
+import storage.StorageManager;
+import ui.UiCode;
 
 public class CommandCliDisplay extends Command {
 
@@ -15,11 +16,7 @@ public class CommandCliDisplay extends Command {
     }
 
     @Override
-    public void execute(MainWindow gui) {
-        try {
-            gui.showCliDisplay();
-        } catch (Exception e) {
-            gui.displayToast("Unable to show CLI Display");
-        }
+    public void execute(StorageManager storageManager) {
+        this.infoCapsule.setUiCode(UiCode.DISPLAY_CLI);
     }
 }

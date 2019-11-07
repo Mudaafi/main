@@ -1,7 +1,13 @@
-package executor.command;
+package executor;
 
 import duke.exception.DukeException;
+import executor.accessors.AccessDeny;
+import executor.accessors.Accessor;
+import executor.command.Command;
+import executor.command.CommandError;
+import executor.command.CommandType;
 import storage.StorageManager;
+import utils.AccessType;
 import utils.InfoCapsule;
 
 public class Executor {
@@ -40,6 +46,22 @@ public class Executor {
             c = new CommandError(userInput);
         }
         return c;
+    }
+
+    public InfoCapsule access(AccessType accessType, String argsStr) {
+        Accessor accessor = Executor.createAccessor(accessType, argsStr);
+        accessor.execute(this.storageLayer);
+        return accessor.getInfoCapsule();
+    }
+
+    public static Accessor createAccessor(AccessType accessType, String argsStr) {
+        Accessor accessor;
+        try {
+            accessor = (Accessor) accessType.getAccessClass().getDeclaredConstructor().newInstance();
+        } catch (Exception e) {
+            accessor = new AccessDeny(argsStr);
+        }
+        return accessor;
     }
 
     public InfoCapsule saveAllData() {
