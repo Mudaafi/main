@@ -29,7 +29,7 @@ public class CommandWeather extends Command {
         this.userInput = userInput;
         this.commandType = CommandType.WEATHER;
         this.description = "Command that displays weather for now, tomorrow or later \n"
-                + "FORMAT : \n";
+                + "FORMAT : weather /until <period> \n";
     }
     
     @Override
@@ -96,11 +96,14 @@ public class CommandWeather extends Command {
                     for (Map.Entry<String, String> weatherEntry : weather.getValue().entrySet()) {
                         String field = weatherEntry.getKey();
                         String value = weatherEntry.getValue();
-                        outputStr.append(field + " : " + value);
+                        outputStr.append(field
+                                + " : "
+                                + value
+                                + "\n");
                     }
+                    outputStr.append("\n");
                 }
             }
-            outputStr.append("\n");
         } else {
             outputStr.append("Weather Data not available \n"
                     + "1. Please ensure that you have active Internet access \n"
